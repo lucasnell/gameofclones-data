@@ -1,13 +1,7 @@
 
-library(tidyverse)
-library(gameofclones)
-library(parallel)
-library(patchwork)
-library(viridisLite)
-library(here)
+source("scripts/_shared.R")
 
 
-options(mc.cores = max(parallel::detectCores()-2L, 1L))
 
 # colors for resistant, susceptible, and parasitoid wasps, respectively
 col_pal <- list(r = viridis(100)[50],
@@ -333,7 +327,7 @@ do_wasp_sims <- function(.wasp_density_0, .max_t = 500) {
 
 
 
-wasp_sims <- mclapply(c(1, 2, 3, 10), do_wasp_sims)
+wasp_sims <- safe_mclapply(c(1, 2, 3, 10), do_wasp_sims)
 
 
 wasp_aphids <- map_dfr(wasp_sims, ~ group_aphids(.x[["aphids"]], "living")) |>
@@ -426,7 +420,7 @@ do_disp_sims <- function(.alate_field_disp_p, .max_t = 5000) {
 
 
 
-disp_sims <- mclapply(c(0.05, 0.1, 0.2, 0.4), do_disp_sims)
+disp_sims <- safe_mclapply(c(0.05, 0.1, 0.2, 0.4), do_disp_sims)
 
 
 disp_aphids <- map_dfr(disp_sims, ~ group_aphids(.x[["aphids"]], "living")) |>
@@ -558,7 +552,7 @@ do_stable_start_sims <- function(.p_res, .max_t = 5000) {
 
 p_res_lvls <- c(0.35, 0.4, 0.8, 0.85)
 
-stable_start_sims <- mclapply(p_res_lvls, do_stable_start_sims)
+stable_start_sims <- safe_mclapply(p_res_lvls, do_stable_start_sims)
 
 
 stable_start_aphids <- map_dfr(stable_start_sims,
@@ -682,7 +676,7 @@ stable_perturb_sims <- list(tibble(when = 10e3, where = 1:2,
                                    who = "wasps", how = 0.5),
                             tibble(when = 10e3, where = 1:2,
                                    who = "mummies", how = 0.5)) |>
-    mclapply(do_stable_perturb_sims)
+    safe_mclapply(do_stable_perturb_sims)
 
 pert_t_range <- c(9.8, 10.5) * 1e3
 

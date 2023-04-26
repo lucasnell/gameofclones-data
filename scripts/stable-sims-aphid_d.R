@@ -1,8 +1,8 @@
 
-library(numDeriv)
-library(gameofclones)
-library(viridisLite)
-library(here)
+source("scripts/_shared.R")
+
+
+
 
 # colors for resistant, susceptible, and parasitoid wasps, respectively
 col_pal <- list(r = viridis(100)[50],

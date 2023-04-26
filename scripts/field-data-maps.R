@@ -1,11 +1,6 @@
 
-library(tidyverse)
-library(gameofclones)
-library(ggtext)             # element_markdown
-library(lubridate)          # yday, year
-library(viridisLite)        # inferno
-library(here)               # here
-library(grid)               # grid.newpage, grid.draw
+source("scripts/_shared.R")
+
 library(sf)                 # st_* (e.g., st_read, st_transform, st_crs)
 library(ggmap)              # get_googlemap
 library(rnaturalearth)      # ne_countries

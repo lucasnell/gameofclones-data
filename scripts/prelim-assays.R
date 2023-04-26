@@ -8,14 +8,7 @@
 #' Data were collected in fall 2020.
 #'
 
-
-library(grid)
-library(tidyverse)
-library(patchwork)
-library(gameofclones)
-library(viridisLite)
-library(lme4)
-library(here)
+source("scripts/_shared.R")
 
 
 

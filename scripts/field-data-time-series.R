@@ -1,12 +1,5 @@
 
-library(tidyverse)
-library(gameofclones)
-library(ggtext)         # element_markdown
-library(lubridate)      # yday, year, ymd
-library(viridisLite)    # inferno
-library(readxl)         # readxl
-library(here)           # here
-library(grid)           # grid.newpage, grid.draw
+source("scripts/_shared.R")
 
 
 

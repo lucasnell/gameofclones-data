@@ -1,9 +1,7 @@
 
-library(numDeriv)
+source("scripts/_shared.R")
+
 library(plot3D)
-library(grid)
-library(gameofclones)
-library(here)
 
 
 # File name for figure:

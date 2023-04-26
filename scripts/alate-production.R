@@ -6,13 +6,8 @@
 #' Data were collected in summer 2020.
 #'
 
+source("scripts/_shared.R")
 
-library(lme4)
-library(tidyverse)
-library(gameofclones)
-library(here)
-
-options(boot.ncpus = max(parallel::detectCores()-2L, 1L))
 
 
 

@@ -1,7 +1,5 @@
 
-library(gameofclones)
-library(grid)
-library(here)
+source("scripts/_shared.R")
 
 
 # File name for figure:

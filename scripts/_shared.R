@@ -1,8 +1,58 @@
 
-library(tidyverse)
-library(gameofclones)
-library(here)
 
+#' This file is sourced by all R files inside `scripts` folder.
+#' It loads all packages (except those used only once),
+#' sets the default ggplot2 theme,
+#' sets number of threads to use for multithreaded operations
+#' defines function to only do multithreading on unix systems,
+#' and defines the function used to save all plots.
+
+suppressPackageStartupMessages({
+    library(tidyverse)
+    library(gameofclones)
+    library(here)
+    library(viridisLite)
+    library(grid)
+    library(scales)
+    library(patchwork)
+    library(ggtext)
+    library(lme4)
+    library(numDeriv)
+    library(parallel)
+})
+
+#' The only other packages I used in any scripts are...
+#'
+#' `plot3D` (`figS8.R`)
+#' `sf`, `ggmap`, `rnaturalearth`, and `rnaturalearthdata` (`field-data-maps.R`)
+#'
+#' See `README.md` in the parent directory for installing them all.
+#'
+
+
+
+# Change to max number of threads you want to use:
+.n_threads <- max(detectCores()-2L, 1L)
+
+options(boot.ncpus = .n_threads)
+options(mc.cores = .n_threads)
+
+
+#' Run mclapply on unix system, run lapply on anything else.
+#'
+#' @param X a vector (atomic or list) or an expressions vector.
+#'     Other objects (including classed objects) will be coerced by `as.list`.
+#' @param FUN the function to be applied to each element of `X`
+#' @param ... Other arguments passed to mclapply (or lapply on Windows).
+#'
+safe_mclapply <- function(X, FUN, ...) {
+    if (.Platform$OS.type == "unix") {
+        out <- mclapply(X, FUN, ...)
+    } else {
+        out <- lapply(X, FUN, ...)
+    }
+    return(out)
+}
 
 
 # ggplot2 theme:

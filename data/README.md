@@ -1,4 +1,4 @@
-# `_data` directory
+# `data` directory
 
 This directory contains the raw data from the experiments and some preliminary
 assays. File descriptions are below.
@@ -198,8 +198,8 @@ Column descriptions:
 ## Other files not present immediately
 
 
-Data from Ives et al. (2020) are used in files `_results/field-data-maps.R` and
-`_results/field-data-time-series.R`.
+Data from Ives et al. (2020) are used in files `scripts/field-data-maps.R` and
+`scripts/field-data-time-series.R`.
 These data are not provided in this repository.
 To create the plots that used data from Ives et al. (2020) (fig. 1),
 you should download them from <https://doi.org/10.6084/m9.figshare.11828865.v1>.
@@ -207,15 +207,15 @@ Then rename
 `Ives et al. 2020 Data Fig2_1.csv` to `parasitism-2001-2016.csv`
 and
 `Ives et al. 2020 Data Fig3A.csv` to `symbionts-2012-2017.csv`
-Lastly, put both inside the `_results/_data` folder.
+Lastly, put both inside the `data` folder.
 
 
 The following files are referred to in this repo's scripts and are simply 
 intermediate files containing simulation code that takes a while to run:
 
 * `stable-sims-aphid_d.csv`: Simulations of how aphid dispersal affect the
-  final states of the system. See `_results/stable-sims-aphid_d.R` for more.
+  final states of the system. See `scripts/stable-sims-aphid_d.R` for more.
 * `stable-sims-wasp_d.csv`: Simulations of how wasp dispersal affect the
-  final states of the system. See `_results/stable-sims-wasp_d.R` for more.
+  final states of the system. See `scripts/stable-sims-wasp_d.R` for more.
 
 

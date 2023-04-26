@@ -3,7 +3,7 @@
 #' Create LaTeX table of stage-structured parameters.
 #'
 
-library(gameofclones)
+source("scripts/_shared.R")
 
 line_s <- clonal_line("susceptible",
                       density_0 = cbind(c(0,0,0,0,32), rep(0, 5)),

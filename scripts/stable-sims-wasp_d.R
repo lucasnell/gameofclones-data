@@ -1,7 +1,7 @@
-library(gameofclones)
-library(scales)
-library(viridisLite)
-library(here)
+
+source("scripts/_shared.R")
+
+
 
 
 # colors for resistant, susceptible, and parasitoid wasps, respectively

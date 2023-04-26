@@ -1,9 +1,6 @@
 
-library(gameofclones)
-library(scales)
-library(grid)
-library(viridisLite)
-library(here)
+source("scripts/_shared.R")
+
 
 
 # File name for figure:
