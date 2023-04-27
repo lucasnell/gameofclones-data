@@ -5,7 +5,9 @@ plus scripts that analyze these data and use `gameofclones` package
 to simulate the system.
 
 
-# Installing packages
+# Replicating environment
+
+I used R version 4.3.0 (platform: aarch64-apple-darwin20) for all my scripts.
 
 This project uses the `renv` package, so if you want to use this, you must
 first install it:
@@ -37,7 +39,11 @@ install.packages("remotes")
 remotes::install_github("lucasnell/gameofclones@v1.0.1")
 ```
 
-Similarly, but without version numbers:
+Note that these only install the proper versions of the packages I manually 
+installed, so dependencies might vary from what I used.
+
+
+Similarly, but without version numbers at all:
 
 ```r
 pkgs <- c("tidyverse", "here", "viridisLite", "grid", "scales", "patchwork", 
