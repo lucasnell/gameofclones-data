@@ -1,7 +1,8 @@
-# meedap
+# gameofclones-data
 
-<b>M</b>aintenance of <b>E</b>volutionary and <b>E</b>cological 
-<b>D</b>iversity in <b>A</b>phids and <b>P</b>arasitoids
+Data on eco-evolutionary dynamics in pea aphids and parasitoids, 
+plus scripts that analyze these data and use `gameofclones` package
+to simulate the system.
 
 
 # Installing packages
@@ -32,7 +33,19 @@ pkgs <- c("tidyverse@2.0.0", "here@1.0.1", "viridisLite@0.4.1", "grid@4.3.0",
           "sf@1.0.12", "ggmap@3.0.2", "rnaturalearth@0.3.2", 
           "rnaturalearthdata@0.1.0")
 install.packages(pkgs)
+install.packages("remotes")
 remotes::install_github("lucasnell/gameofclones@v1.0.1")
+```
+
+Similarly, but without version numbers:
+
+```r
+pkgs <- c("tidyverse", "here", "viridisLite", "grid", "scales", "patchwork", 
+          "ggtext", "lme4", "numDeriv", "parallel", "plot3D", "sf", "ggmap", 
+          "rnaturalearth", "rnaturalearthdata")
+install.packages(pkgs)
+install.packages("remotes")
+remotes::install_github("lucasnell/gameofclones")
 ```
 
 

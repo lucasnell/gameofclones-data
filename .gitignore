@@ -50,7 +50,7 @@ rsconnect/
 
 
 # Folder full of plot PDFs that scripts generate:
-scripts/plots
+plots
 
 # Temporary files not needed here:
 data/stable-sims-aphid_d.csv
