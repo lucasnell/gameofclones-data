@@ -10,22 +10,17 @@ col_pal <- list(r = viridis(100)[50],
                 w = viridis(100)[1])
 
 # Directory where plots produced here will be added:
-plot_dir_out <- here("_results/_plots/stable-sims")
+plot_dir_out <- here("plots/stable-sims")
 if (!dir.exists(plot_dir_out)) dir.create(plot_dir_out, recursive = TRUE)
 # Names of files produced here:
 plots_out <- list(N = paste0(plot_dir_out, "/stable-sims-aphid_d-abundance.pdf"),
                   P = paste0(plot_dir_out, "/stable-sims-aphid_d-resistance.pdf"))
 # Name of temporary results file produced here:
-tmp_results <- here("_results/_data/stable-sims-aphid_d.csv")
+tmp_results <- here("data/stable-sims-aphid_d.csv")
 
 
 
-rm_tibs <- function(.sims) {
-    for (n in c("aphids", "wasps")) {
-        .sims[[n]] <- as.data.frame(.sims[[n]])
-    }
-    return(.sims)
-}
+
 comm <- function(x, sim, new_starts = NULL, max_t = 1){
     if(is.null(new_starts)) new_starts <- sim$all_info[[1]]
     new_starts$N <- x

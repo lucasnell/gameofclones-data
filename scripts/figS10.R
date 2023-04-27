@@ -4,21 +4,13 @@ source("scripts/_shared.R")
 
 
 # File name for figure:
-file_out <- here("_results/_plots/trajectories-greater-dispersal.pdf")
+file_out <- here("plots/trajectories-greater-dispersal.pdf")
 
 
 # colors for resistant, susceptible, and parasitoid wasps, respectively
 col_pal <- list(r = viridis(100)[50],
                 s = viridis(100)[95],
                 w = viridis(100)[1])
-
-
-rm_tibs <- function(.sims) {
-    for (n in c("aphids", "wasps")) {
-        .sims[[n]] <- as.data.frame(.sims[[n]])
-    }
-    return(.sims)
-}
 
 
 
@@ -84,8 +76,8 @@ pick.wasp.disp.list <- 16:17
 
 
 
+traj_great_disp_p <- function() {
 
-cairo_pdf(file_out, width = 7, height = 7)
 	for(pick.wasp.disp in pick.wasp.disp.list){
 
 		wasp.disp <- wasp.disp.list[pick.wasp.disp]
@@ -156,15 +148,22 @@ cairo_pdf(file_out, width = 7, height = 7)
 		         labels = c("resistant", "susceptible", "parasitoids"))
 		}
 	}
-dev.off()
 
-
-
-#'
-#' If pdfcrop and ghostscript are installed, use `pdfcrop` to trim whitespace.
-#' This isn't necessary to replicate the main plot, but it helps in
-#' incorporating the plot into the final document.
-#'
-if (nzchar(Sys.which("pdfcrop")) && nzchar(tools::find_gs_cmd())) {
-    system2("pdfcrop", shQuote(c(file_out, file_out)), stdout = FALSE)
+    invisible(NULL)
 }
+
+
+# cairo_pdf(file_out, width = 7, height = 7)
+# traj_great_disp_p()
+# dev.off()
+
+
+
+#' #'
+#' #' If pdfcrop and ghostscript are installed, use `pdfcrop` to trim whitespace.
+#' #' This isn't necessary to replicate the main plot, but it helps in
+#' #' incorporating the plot into the final document.
+#' #'
+#' if (nzchar(Sys.which("pdfcrop")) && nzchar(tools::find_gs_cmd())) {
+#'     system2("pdfcrop", shQuote(c(file_out, file_out)), stdout = FALSE)
+#' }

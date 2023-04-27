@@ -11,7 +11,7 @@ source("scripts/_shared.R")
 
 
 
-col_counts <- here("_results/_data/alate-counts.csv") |>
+col_counts <- here("data/alate-counts.csv") |>
     read_csv(col_types = cols()) |>
     mutate(sample_date = as.Date(sample_date, "%m/%d/%Y"),
            date = as.Date(date, "%m/%d/%Y"),
@@ -25,16 +25,6 @@ col_counts <- here("_results/_data/alate-counts.csv") |>
            pot = as.factor(paste0(line, "_", date)),
            obs = 1:n())
 
-
-col_counts |>
-    mutate(p = alate / total) |>
-    ggplot(aes(total, p)) +
-    geom_point(aes(color = line)) +
-    scale_color_manual(guide = "none",
-                       values = viridisLite::rocket(10)[
-                           do.call(c, map(1:5, ~ .x + c(0,5)))]) +
-    scale_y_continuous("Proportion alates") +
-    xlab("Total aphids")
 
 
 
@@ -51,7 +41,7 @@ boot_total_fixef <- function(x) fixef(x)[["total"]]
 
 # Takes ~14 sec on my machine using 6 threads
 total_mod_boot <- bootMer(total_mod, boot_total_fixef, nsim = 2000,
-                       seed = 96123392, parallel = "multicore")
+                       seed = 96123392, parallel = getOption("boot.parallel"))
 
 # 95% CI and median estimate from parametric bootstrapping:
 quantile(total_mod_boot$t, c(0.025, 0.5, 0.975))
@@ -77,7 +67,7 @@ boot_line_ranef <- function(x) {
 
 # Takes ~14 sec on my machine using 6 threads
 line_mod_boot <- bootMer(line_mod, boot_line_ranef, nsim = 2000,
-                         seed = 1784416833, parallel = "multicore",
+                         seed = 1784416833, parallel = getOption("boot.parallel"),
                          re.form = ~ (1 | line))
 
 # 95% CI and median estimates for each line from parametric bootstrapping:
@@ -93,28 +83,27 @@ apply(line_mod_boot$t, 2, quantile, probs = c(0.025, 0.5, 0.975))
 # 97.5% -1.866954 -0.9159304 -1.114809 -1.678777
 
 
-# To visualize this:
-
-apply(line_mod_boot$t, 2, quantile, probs = c(0.025, 0.5, 0.975)) |>
-    t() |>
-    as.data.frame() |>
-    rownames_to_column() |>
-    set_names(c("line", "low", "med", "high")) |>
-    as_tibble() |>
-    ggplot(aes(line)) +
-    geom_point(aes(y = med)) +
-    geom_linerange(aes(ymin = low, ymax = high))
-
-# If you want to see the entire distribution of the bootstrap resamples:
-line_mod_boot |>
-    as_tibble() |>
-    pivot_longer(everything(), names_to = "line", values_to = "b0") |>
-    ggplot(aes(b0)) +
-    geom_vline(xintercept = median(line_mod_boot$t), linetype = 1, color = "gray70") +
-    geom_hline(yintercept = 0, color = "gray70") +
-    geom_density() +
-    facet_wrap(~ line, ncol = 1) +
-    theme(strip.text = element_text(size = 8))
+# # To visualize this:
+# apply(line_mod_boot$t, 2, quantile, probs = c(0.025, 0.5, 0.975)) |>
+#     t() |>
+#     as.data.frame() |>
+#     rownames_to_column() |>
+#     set_names(c("line", "low", "med", "high")) |>
+#     as_tibble() |>
+#     ggplot(aes(line)) +
+#     geom_point(aes(y = med)) +
+#     geom_linerange(aes(ymin = low, ymax = high))
+#
+# # If you want to see the entire distribution of the bootstrap resamples:
+# line_mod_boot |>
+#     as_tibble() |>
+#     pivot_longer(everything(), names_to = "line", values_to = "b0") |>
+#     ggplot(aes(b0)) +
+#     geom_vline(xintercept = median(line_mod_boot$t), linetype = 1, color = "gray70") +
+#     geom_hline(yintercept = 0, color = "gray70") +
+#     geom_density() +
+#     facet_wrap(~ line, ncol = 1) +
+#     theme(strip.text = element_text(size = 8))
 
 
 # And the 95% CI of the difference between the two lines of interest:

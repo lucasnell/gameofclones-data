@@ -18,7 +18,7 @@ library(rnaturalearthdata)  # used for ne_countries
 #' and
 #' `Ives et al. 2020 Data Fig3A.csv` to `symbionts-2012-2017.csv`
 #'
-#' Then put both inside the `gameofclones/_results/_data` folder.
+#' Then put both inside the `gameofclones/data` folder.
 #'
 
 
@@ -32,7 +32,7 @@ library(rnaturalearthdata)  # used for ne_countries
 
 
 par_df <- list(
-    here("_results/_data/parasitism-2001-2016.csv") |>
+    here("data/parasitism-2001-2016.csv") |>
         read_csv(col_types = cols()) |>
         select(field, Cycle, DateFormat, year, day, para, paraN) |>
         rename(cycle = Cycle, para_n = paraN, date = DateFormat) |>
@@ -46,7 +46,7 @@ par_df <- list(
                field = ifelse(field == "506.1", "506S", field),
                date = as.Date(date)) |>
         filter(!is.na(para), !is.na(para_n)),
-    list.files(here("_results/_data"), "parasitism-....\\.csv",
+    list.files(here("data"), "parasitism-....\\.csv",
                full.names = TRUE) |>
         map_dfr(read_csv, show_col_types = FALSE) |>
         # I can't find this one in any of the Arlington maps...
@@ -223,7 +223,7 @@ obs_par_df <- obs_par_df |>
 
 
 
-fields_sf <- st_read(here("_results/_data/Arlington.geojson")) |>
+fields_sf <- st_read(here("data/Arlington.geojson")) |>
     st_transform(st_crs(3857)) |>
     mutate(geometry = st_centroid(geometry)) |>
     rename(geom = geometry)
@@ -318,8 +318,8 @@ fields_par_p <- obs_fields_par |>
 
 # fields_par_p
 
-save_plot(here("_results/_plots/field-data/par-map.pdf"), fields_par_p,
-          w = 3.5, h = 2.5, bg = "transparent")
+# save_plot(here("plots/field-data/par-map.pdf"), fields_par_p,
+#           w = 3.5, h = 2.5, bg = "transparent")
 
 
 
@@ -342,8 +342,8 @@ fields_par_p_leg <- function() {
     grid.draw(legend)
 }
 
-save_plot(here("_results/_plots/field-data/par-map-legend.pdf"), fields_par_p_leg,
-          w = 2, h = 3.5)
+# save_plot(here("plots/field-data/par-map-legend.pdf"), fields_par_p_leg,
+#           w = 2, h = 3.5)
 
 
 #' ----------------------------------------------------------------------
@@ -376,11 +376,11 @@ usa_map_p <- ne_countries(country = "united states of america",
 
 # usa_map_p
 
-save_plot(here("_results/_plots/field-data/par-map-usa-inset.pdf"), usa_map_p,
-          w = 2.5, h = 1.5)
+# save_plot(here("plots/field-data/par-map-usa-inset.pdf"), usa_map_p,
+#           w = 2.5, h = 1.5)
 
 # If you have pdfcrop installed:
-# system(paste("pdfcrop", here("_results/_plots/field-data/par-map-usa-inset.pdf")))
+# system(paste("pdfcrop", here("plots/field-data/par-map-usa-inset.pdf")))
 
 
 
@@ -390,21 +390,50 @@ save_plot(here("_results/_plots/field-data/par-map-usa-inset.pdf"), usa_map_p,
 #' ----------------------------------------------------------------------
 #' ----------------------------------------------------------------------
 
-arl_google <- get_googlemap(c(-89.35399, 43.30917), zoom = 13, maptype = "satellite")
+#'
+#' To use get_googlemap, you have to register a key like this:
+#' `register_google(key = "mQkzTpiaLYjPqXQBotesgif3EfGL2dbrNVOrogg")`
+#' (this is fake key provided in `register_google` docs)
+#'
 
-arl_goog_p <- ggmap(arl_google) +
-    # geom_rect(xmin = xy_lims$xmin, xmax = xy_lims$xmax,
-    #           ymin = xy_lims$ymin, ymax = xy_lims$ymax,
-    #           fill = NA, color = "black", linewidth = 0.5) +
+#' Accessed on 2023-04-26
+arl_google <- get_googlemap(c(-89.35399, 43.30917), zoom = 13,
+                            maptype = "satellite")
+
+# from https://stackoverflow.com/a/50844502
+# Define a function to fix the bbox to be in EPSG:3857
+ggmap_bbox <- function(map) {
+    if (!inherits(map, "ggmap")) stop("map must be a ggmap object")
+    # Extract the bounding box (in lat/lon) from the ggmap to a numeric vector,
+    # and set the names to what sf::st_bbox expects:
+    map_bbox <- setNames(unlist(attr(map, "bb")),
+                         c("ymin", "xmin", "ymax", "xmax"))
+
+    # Coonvert the bbox to an sf polygon, transform it to 3857,
+    # and convert back to a bbox (convoluted, but it works)
+    bbox_3857 <- st_bbox(st_transform(st_as_sfc(st_bbox(map_bbox, crs = 4326)), 3857))
+
+    # Overwrite the bbox of the ggmap object with the transformed coordinates
+    attr(map, "bb")$ll.lat <- bbox_3857["ymin"]
+    attr(map, "bb")$ll.lon <- bbox_3857["xmin"]
+    attr(map, "bb")$ur.lat <- bbox_3857["ymax"]
+    attr(map, "bb")$ur.lon <- bbox_3857["xmax"]
+    map
+}
+
+
+arl_goog_p <- arl_google |>
+    ggmap_bbox() |>
+    ggmap() +
     coord_sf(datum = st_crs(3857),
              xlim = as.numeric(xy_lims[c("xmin", "xmax")]),
              ylim = as.numeric(xy_lims[c("ymin", "ymax")]),
-             clip = "on") +
+             clip = "off") +
     theme_void()
 
 
-save_plot(here("_results/_plots/field-data/par-map-google-inset.pdf"), arl_goog_p,
-          w = 1.5, h = 1.5)
+# save_plot(here("plots/field-data/par-map-google-inset.pdf"), arl_goog_p,
+#           w = 1.5, h = 1.5)
 
 
 

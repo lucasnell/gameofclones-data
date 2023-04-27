@@ -3,16 +3,10 @@ source("scripts/_shared.R")
 
 
 # File name for figure:
-file_out <- here("_results/_plots/trajectories-experiment.pdf")
+file_out <- here("plots/trajectories-experiment.pdf")
 
 
 
-rm_tibs <- function(.sims) {
-    for (n in c("aphids", "wasps")) {
-        .sims[[n]] <- as.data.frame(.sims[[n]])
-    }
-    return(.sims)
-}
 clone_traj <- function(sim, delta, category = "resistant", max_t = 400,
                        perturb = NULL){
 
@@ -152,7 +146,7 @@ sim <- sim_experiments(clonal_lines = c(line_s, line_r),
 
 
 
-# figure itself ----
-cairo_pdf(filename = file_out, width = 5, height = 7)
-clone_plot(sim, delta.list, max_t = 500)
-dev.off()
+# # figure itself ----
+# cairo_pdf(filename = file_out, width = 5, height = 7)
+# clone_plot(sim, delta.list, max_t = 500)
+# dev.off()

@@ -11,7 +11,7 @@ source("scripts/_shared.R")
 #' and
 #' `Ives et al. 2020 Data Fig3A.csv` to `symbionts-2012-2017.csv`
 #'
-#' Then put both inside the `gameofclones/_results/_data` folder.
+#' Then put both inside the `gameofclones/data` folder.
 #'
 
 
@@ -75,7 +75,7 @@ maps_dates <- as.Date(c("2015-06-03", "2015-06-12", "2015-06-19",
 
 
 par_df <- list(
-    here("_results/_data/parasitism-2001-2016.csv") |>
+    here("data/parasitism-2001-2016.csv") |>
         read_csv(col_types = cols()) |>
         select(field, Cycle, DateFormat, year, day, para, paraN) |>
         rename(cycle = Cycle, para_n = paraN, date = DateFormat) |>
@@ -89,7 +89,7 @@ par_df <- list(
                field = ifelse(field == "506.1", "506S", field),
                date = as.Date(date)) |>
         filter(!is.na(para), !is.na(para_n)),
-    list.files(here("_results/_data"), "parasitism-....\\.csv",
+    list.files(here("data"), "parasitism-....\\.csv",
                full.names = TRUE) |>
         map_dfr(read_csv, show_col_types = FALSE) |>
         # I can't find this one in any of the Arlington maps...
@@ -148,13 +148,13 @@ par_df <- list(
 
 
 
-older_ham_df <- here("_results/_data/symbionts-2018-2019.csv") |>
+older_ham_df <- here("data/symbionts-2018-2019.csv") |>
     read_csv(col_types = cols()) |>
     base::`[`()
 
 
 
-newer_ham_df <- here("_results/_data/symbionts-2012-2017.csv") |>
+newer_ham_df <- here("data/symbionts-2012-2017.csv") |>
     read_csv(col_types = cols()) |>
     mutate(season = case_when(is.na(date) ~ "fall",
                               late == 1 ~ "fall",
@@ -233,8 +233,8 @@ par_ts_p <- par_df |>
 
 # par_ts_p
 
-save_plot(here("_results/_plots/field-data/par-time.pdf"), par_ts_p,
-          w = 4, h = 2.5)
+# save_plot(here("plots/field-data/par-time.pdf"), par_ts_p,
+#           w = 4, h = 2.5)
 
 par_ts_p_leg <- function() {
     legend <- (par_ts_p + theme(legend.position = "right")) |>
@@ -248,8 +248,8 @@ par_ts_p_leg <- function() {
     grid.draw(legend)
 }
 
-save_plot(here("_results/_plots/field-data/par-time-legend.pdf"), par_ts_p_leg,
-          w = 2, h = 2.5)
+# save_plot(here("plots/field-data/par-time-legend.pdf"), par_ts_p_leg,
+#           w = 2, h = 2.5)
 
 
 
@@ -284,8 +284,8 @@ par_ts_wlines_p <- par_df |>
     scale_color_viridis_d(guide = "none") +
     scale_fill_viridis_d(guide = "none")
 
-save_plot(here("_results/_plots/par-time-by-field.pdf"), par_ts_wlines_p,
-          w = 6.5, h = 5)
+# save_plot(here("plots/par-time-by-field.pdf"), par_ts_wlines_p,
+#           w = 6.5, h = 5)
 
 
 
@@ -298,6 +298,6 @@ ham_ts_p <- ham_df |>
 
 # ham_ts_p
 
-save_plot(here("_results/_plots/field-data/ham-time.pdf"), ham_ts_p,
-          w = 4, h = 2.5, seed = 380247925)
+# save_plot(here("plots/field-data/ham-time.pdf"), ham_ts_p,
+#           w = 4, h = 2.5, seed = 380247925)
 

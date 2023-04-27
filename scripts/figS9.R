@@ -4,7 +4,7 @@ source("scripts/_shared.R")
 
 
 # File name for figure:
-file_out <- here("_results/_plots/trajectories-field.pdf")
+file_out <- here("plots/trajectories-field.pdf")
 
 
 # colors for resistant, susceptible, and parasitoid wasps, respectively
@@ -12,13 +12,6 @@ col_pal <- list(r = viridis(100)[50],
                 s = viridis(100)[95],
                 w = viridis(100)[1])
 
-
-rm_tibs <- function(.sims) {
-    for (n in c("aphids", "wasps")) {
-        .sims[[n]] <- as.data.frame(.sims[[n]])
-    }
-    return(.sims)
-}
 
 # Susceptible line: no resistance, high population growth rate
 line_s <- clonal_line("susceptible",
@@ -76,7 +69,7 @@ perturb <- perturb[1:(3*n.events),]
 
 
 
-cairo_pdf(file_out, width = 7, height = 7)
+traj_field_p <- function() {
 	for(remove in c(TRUE,FALSE)){
 
 		if(remove) {
@@ -158,7 +151,13 @@ cairo_pdf(file_out, width = 7, height = 7)
 
 
 	}
-dev.off()
+
+}
+
+
+# cairo_pdf(file_out, width = 7, height = 7)
+# traj_field_p()
+# dev.off()
 
 
 #'

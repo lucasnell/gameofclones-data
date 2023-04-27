@@ -269,30 +269,12 @@ main_p_list <- levels(main_aphids$disp) |>
 
 if (write_plots) {
     for (i in 1:length(main_p_list)) {
-        fn <- paste0(here("_results/_plots/sims-and-exps/"),
+        fn <- paste0(here("plots/sims-and-exps/"),
                      sprintf("sims-%i-%s.pdf", i, names(main_p_list)[i]))
         save_plot(fn, main_p_list[[i]], 4, 1.25)
     }; rm(i, fn)
 } else wrap_plots(main_p_list, nrow = 1)
 
-
-
-# If interested in discussing proportion of aphid dispersing
-# (to compare to experiments):
-main_sims[["aphid dispersal"]][["aphids"]] |>
-    filter(type != "mummy") |>
-    pivot_wider(names_from = type, values_from = N) |>
-    mutate(total = alate + apterous + parasitized) |>
-    group_by(time, field, line) |>
-    summarize(p_disp = 0.1 * alate / total, .groups = "drop") |>
-    # .[["p_disp"]] |> mean()
-    ggplot(aes(time, p_disp)) +
-    geom_hline(yintercept = 0, color = "gray70") +
-    geom_line(aes(color = line)) +
-    scale_color_manual(values = clone_pal, guide = "none") +
-    scale_y_continuous("Proportion dispersed") +
-    scale_x_continuous("Days") +
-    facet_wrap( ~ field)
 
 
 
@@ -387,7 +369,7 @@ wasp_p <- wrap_plots(wasp_p_list, ncol = 2, guides = "collect") +
 
 
 if (write_plots) {
-    save_plot("_results/_plots/sims-wasp.pdf", wasp_p, 10, 5)
+    save_plot("plots/sims-wasp.pdf", wasp_p, 10, 5)
 } else wasp_p
 
 
@@ -493,7 +475,7 @@ disp_p <- wrap_plots(disp_p_list, ncol = 2, guides = "collect") +
 
 
 if (write_plots) {
-    save_plot("_results/_plots/sims-disp.pdf", disp_p, 10, 5)
+    save_plot("plots/sims-disp.pdf", disp_p, 10, 5)
 } else disp_p
 
 
@@ -627,7 +609,7 @@ stable_start_p <- wrap_plots(stable_start_p_list, ncol = 2, guides = "collect") 
     theme(plot.tag = element_text(size = 14, face = "bold"))
 
 if (write_plots) {
-    save_plot("_results/_plots/sims-stable-start.pdf", stable_start_p, 10, 5)
+    save_plot("plots/sims-stable-start.pdf", stable_start_p, 10, 5)
 } else stable_start_p
 
 
@@ -755,7 +737,7 @@ stable_perturb_p <- wrap_plots(stable_perturb_p_list, ncol = 2, guides = "collec
     theme(plot.tag = element_text(size = 14, face = "bold"))
 
 if (write_plots) {
-    save_plot("_results/_plots/sims-stable-perturb.pdf",
+    save_plot("plots/sims-stable-perturb.pdf",
               stable_perturb_p, 10, 5)
 } else stable_perturb_p
 

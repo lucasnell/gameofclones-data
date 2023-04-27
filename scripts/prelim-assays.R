@@ -35,7 +35,7 @@ clone_pal <- c(col_pal$r, col_pal$s)
 
 
 
-pop_df <- here("_results/_data/assays-population_growth.csv") |>
+pop_df <- here("data/assays-population_growth.csv") |>
     read_csv() |>
     mutate(date = as.Date(paste(year, month, day, sep = "-")),
            rep = factor(rep)) |>
@@ -75,7 +75,7 @@ pop_p <- pop_df |>
 
 # pop_p
 
-# save_plot("_results/_plots/assays-competition.pdf", pop_p, 5, 3)
+# save_plot("plots/assays-competition.pdf", pop_p, 5, 3)
 
 
 
@@ -119,11 +119,11 @@ pop_p <- pop_df |>
 
 
 wasp_df <- bind_rows(
-    here("_results/_data/assays-wasp_resistance_choice.csv") |>
+    here("data/assays-wasp_resistance_choice.csv") |>
         read_csv(col_types = cols()) |>
         select(wasp_group, line, starts_with(c("juv","adult-", "mumm"))) |>
         mutate(set = 1L),
-    here("_results/_data/assays-wasp_resistance_no_choice.csv") |>
+    here("data/assays-wasp_resistance_no_choice.csv") |>
         read_csv(col_types = cols()) |>
         select(wasp_group, round, line,
                starts_with(c("juv", "adult-", "mumm"))) |>
@@ -232,7 +232,7 @@ wasp_p <- mummy_p + surv_p + juv_p +
                                      vjust = 1, hjust = 1),
           axis.title.x = element_blank())
 
-# save_plot("_results/_plots/assays-wasps.pdf", wasp_p, 6.5, 3.5, seed = 45670)
+# save_plot("plots/assays-wasps.pdf", wasp_p, 6.5, 3.5, seed = 45670)
 
 
 
@@ -282,7 +282,6 @@ diff_perms <- replicate(2000, {
     ..sum_diffs[["line"]] <- sample(..sum_diffs[["line"]])
     get_avg_diff(..sum_diffs)
 })
-
 mean(abs(diff_perms) >= abs(obs_diff))
 # [1] 0.0305
 
@@ -333,8 +332,6 @@ mean(abs(surv_perms) >= abs(obs_surv))
 #' Because the `wasp_group` factor differs by assay type / round, we included
 #' that as a random effect in the regressions below to show that this
 #' doesn't affect our conclusions based on the permutation tests.
-#' If anything, the permutations appear to be conservative, so they are
-#' what I present in the main text.
 #'
 
 
@@ -342,9 +339,10 @@ surv_mod <- glmer(cbind(survived, non_survived) ~ line + id + (1 | wasp_group),
                   wasp_df, family = binomial)
 surv_mod |> summary()
 
-set.seed(9876345)
+# Takes ~25 sec on my machine
 surv_mod_boot <- bootMer(surv_mod, function(x) fixef(x)[["linesusceptible"]],
-                         nsim = 2000)
+                         nsim = 2000, seed = 9876345,
+                         parallel = getOption("boot.parallel"))
 # hist(surv_mod_boot$t)
 quantile(surv_mod_boot$t, c(0.025, 0.5, 0.975))
 #      2.5%       50%     97.5%
@@ -354,9 +352,10 @@ juv_mod <- glmer(juvenile_end ~ line + id + (1 | wasp_group),
                  wasp_df, family = poisson)
 juv_mod |> summary()
 
-set.seed(14253796)
+# Takes ~22 sec on my machine
 juv_mod_boot <- bootMer(juv_mod, function(x) fixef(x)[["linesusceptible"]],
-                         nsim = 2000)
+                         nsim = 2000, seed = 14253796,
+                        parallel = getOption("boot.parallel"))
 # hist(juv_mod_boot$t)
 quantile(juv_mod_boot$t, c(0.025, 0.5, 0.975))
 #       2.5%        50%      97.5%

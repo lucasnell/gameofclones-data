@@ -36,6 +36,7 @@ suppressPackageStartupMessages({
 
 options(boot.ncpus = .n_threads)
 options(mc.cores = .n_threads)
+options(boot.parallel = ifelse(.Platform$OS.type != "windows", "multicore", "no"))
 
 
 #' Run mclapply on unix system, run lapply on anything else.
