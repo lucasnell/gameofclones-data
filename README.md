@@ -11,6 +11,26 @@ You can send questions to LAN unless a script explicitly says it was
 written by ARI.
 
 
+
+# Organization
+
+The following folders should be present:
+
+* `data-interm`: intermediate files with output from time-consuming simulations
+* `data-raw`: raw data from the field, experiments, and preliminary assays
+* `LICENSE.md`: file containing the CC0 license for this repository
+* `plots`: all the primary plots in the manuscript
+* `renv`: files necessary to (optionally) use the R package `renv` to install
+  the same R packages with the same versions we used.
+* `renv.lock`: another file necessary for using `renv`
+* `scripts`: the R scripts containing all the analyses and generating
+  all the figures in the manuscript
+
+The folders `data-interm`, `data-raw`, and `scripts` have separate
+`README.md` files that have more information on each.
+
+
+
 # Replicating environment
 
 I used R version 4.3.0 (platform: aarch64-apple-darwin20) for all my scripts.
