@@ -5,19 +5,6 @@
 
 source("scripts/_shared.R")
 
-line_s <- clonal_line("susceptible",
-                      density_0 = cbind(c(0,0,0,0,32), rep(0, 5)),
-                      surv_juv_apterous = "high",
-                      surv_adult_apterous = "high",
-                      repro_apterous = "high")
-# Resistant line: high resistance, low population growth rate
-line_r <- clonal_line("resistant",
-                      density_0 = cbind(c(0,0,0,0,32), rep(0, 5)),
-                      resistant = TRUE,
-                      surv_paras = 0.57,
-                      surv_juv_apterous = "low",
-                      surv_adult_apterous = "low",
-                      repro_apterous = "low")
 
 
 # apterous, alates, parasitized

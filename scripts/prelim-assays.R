@@ -21,13 +21,6 @@ source("scripts/_shared.R")
 # ========================================================================*
 # ========================================================================*
 
-# colors for resistant, susceptible, and parasitoid wasps, respectively
-col_pal <- list(r = viridis(100)[50],
-                s = viridis(100)[95],
-                w = viridis(100)[1])
-# Just for two clones:
-clone_pal <- c(col_pal$r, col_pal$s)
-
 
 # -----------------------------------------------`
 # __pop. growth ----
@@ -73,9 +66,11 @@ pop_p <- pop_df |>
           strip.text = element_blank()) +
     NULL
 
-# pop_p
-
-# save_plot("plots/assays-competition.pdf", pop_p, 5, 3)
+if (write_plots) {
+    save_plot("plots/assays-competition.pdf", pop_p, 5, 3)
+} else {
+    pop_p
+}
 
 
 
@@ -232,7 +227,12 @@ wasp_p <- mummy_p + surv_p + juv_p +
                                      vjust = 1, hjust = 1),
           axis.title.x = element_blank())
 
-# save_plot("plots/assays-wasps.pdf", wasp_p, 6.5, 3.5, seed = 45670)
+if (write_plots) {
+    save_plot("plots/assays-wasps.pdf", wasp_p, 6.5, 3.5, seed = 45670)
+} else {
+    wasp_p
+}
+
 
 
 

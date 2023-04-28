@@ -1,17 +1,15 @@
 
 source("scripts/_shared.R")
 
+source("scripts/_shared-stable.R")
 
 
-
-# colors for resistant, susceptible, and parasitoid wasps, respectively
-col_pal <- list(r = viridis(100)[50],
-                s = viridis(100)[95],
-                w = viridis(100)[1])
 
 # Directory where plots produced here will be added:
 plot_dir_out <- here("plots/stable-sims")
-if (!dir.exists(plot_dir_out)) dir.create(plot_dir_out, recursive = TRUE)
+if (!dir.exists(plot_dir_out) && write_plots) {
+    dir.create(plot_dir_out, recursive = TRUE)
+}
 # Names of files produced here:
 plots_out <- list(N = paste0(plot_dir_out, "/stable-sims-wasp_d-abundance.pdf"),
                   P = paste0(plot_dir_out, "/stable-sims-wasp_d-resistance.pdf"))
@@ -47,27 +45,12 @@ clone_wasp_converge <- function(sim, delta, max_t = 1e4, tol = 1e-8,
 
     return(all(test.wasp, test.resistant, test.susceptible))
 }
-conf_bounds <- function(x, y.lower, y.upper, col="lightgray"){
-    polygon(c(x, rev(x)), c(y.upper, rev(y.lower)), col=col, border=NA)
-}
 
 
 
-# Susceptible line: no resistance, high population growth rate
-line_s <- clonal_line("susceptible",
-                      density_0 = cbind(c(0,0,0,0,32), rep(0, 5)),
-                      surv_juv_apterous = "high",
-                      surv_adult_apterous = "high",
-                      repro_apterous = "high")
-# Resistant line: high resistance, low parasitized-aphid survival rate,
-#                 low population growth rate
-line_r <- clonal_line("resistant",
-                      density_0 = cbind(c(0,0,0,0,32), rep(0, 5)),
-                      resistant = TRUE,
-                      surv_paras = 0.57,
-                      surv_juv_apterous = "low",
-                      surv_adult_apterous = "low",
-                      repro_apterous = "low")
+
+
+
 # shared end ----
 
 
@@ -169,10 +152,6 @@ if (rerun_sims) {
 
             S.resistant <- sum(new.starts$N[!is.na(new.starts$line) & new.starts$line == "resistant"])
             S.susceptible <- sum(new.starts$N[!is.na(new.starts$line) & new.starts$line == "susceptible"])
-
-            # pdf(paste0("sim.multifield.",i.wasp.disp,".pdf"), height = 6, width = 4)
-            # clone_plot(sim = new.sim, delta.list = delta.list, labels = "", max_t = harvesting.length * 40, perturb = perturb)
-            # dev.off()
 
             # aphids
             d <- new.sim$aphids
@@ -325,9 +304,7 @@ w$upper[23] <- .85
 
 
 # For equilibrium abundances ~ wasp dispersal
-
-cairo_pdf(filename = plots_out$N, height = 4, width = 6)
-{
+ss_wasp_d_abund <- function() {
     par(mai=c(0.9, 0.9, 0.1, 0.1))
 
     plot(peak.resistant1 ~ wasp.disp, data = w, typ="l", ylab = "Abundance",
@@ -376,9 +353,13 @@ cairo_pdf(filename = plots_out$N, height = 4, width = 6)
     text(x = max(w$wasp.disp), y = 3.9, labels = "susceptible", col=col_pal$s,
          adj = c(1, 1), font = 2)
 }
-dev.off()
 
 
+if (write_plots) {
+    save_plot(plots_out$N, ss_wasp_d_abund, w = 6, h = 4)
+} else {
+    ss_wasp_d_abund()
+}
 
 
 
@@ -386,8 +367,7 @@ dev.off()
 
 # For equilibrium proportion resistance ~ wasp dispersal
 
-cairo_pdf(filename = plots_out$P, height = 3.6, width = 5.5)
-{
+ss_wasp_d_resist <- function() {
     par(mai=c(0.1, 0.5, 0.5, 0.1))
 
     plot(peak.prop1 ~ wasp.disp, data = w, typ="l", ylim = c(0,1), xaxt = "n",
@@ -411,4 +391,10 @@ cairo_pdf(filename = plots_out$P, height = 3.6, width = 5.5)
     lines(trough.prop1 ~ wasp.disp, data = w, col="dodgerblue3", lwd=2)
     lines(trough.prop2 ~ wasp.disp, data = w, col="dodgerblue3", lwd=2)
 }
-dev.off()
+
+
+if (write_plots) {
+    save_plot(plots_out$P, ss_wasp_d_resist, w = 5.5, h = 3.6)
+} else {
+    ss_wasp_d_resist()
+}

@@ -3,20 +3,6 @@ source("scripts/_shared.R")
 
 
 
-# colors for resistant, susceptible, and parasitoid wasps, respectively
-col_pal <- list(r = viridis(100)[50],
-                s = viridis(100)[95],
-                w = viridis(100)[1])
-# Just for two clones:
-clone_pal <- c(col_pal$r, col_pal$s)
-# Reduce opacity for parasitoid fill:
-wasp_fill <- alpha(col_pal$w, 0.6)
-
-#' Create new plot files? Change to FALSE allows you simply view them without
-#' writing new pdf files to disk.
-write_plots <- TRUE
-
-
 #' These simulations are to plan and create a priori hypotheses for the
 #' eco-evo experiments.
 #' I started with a model from a
@@ -46,30 +32,10 @@ write_plots <- TRUE
 
 
 
-# Define clonal lines. Don't re-define these!
-# Susceptible line: no resistance, high population growth rate
-line_s <- clonal_line("susceptible",
-                     density_0 = cbind(c(0,0,0,0,32), rep(0, 5)),
-                     surv_juv_apterous = "high",
-                     surv_adult_apterous = "high",
-                     repro_apterous = "high")
-# Resistant line: high resistance, low population growth rate
-line_r <- clonal_line("resistant",
-                      density_0 = cbind(c(0,0,0,0,32), rep(0, 5)),
-                      resistant = TRUE,
-                      surv_paras = 0.57,
-                      surv_juv_apterous = "low",
-                      surv_adult_apterous = "low",
-                      repro_apterous = "low")
-
 para_lvls <- paste(c("no parasitism", "parasitism"), "patch")
 
 
 # To maintain the same y-axis limits:
-# wasp_mod <- 0.0164459  # <-- should be max(disp_wasps$wasps) / max(disp_aphids$N)
-# max_N <- 2405  # <-- should be ceiling(max(disp_aphids$N))
-# y_breaks <- 0:2 * 1e3
-# y_labs <- paste0(0:2, "k")
 wasp_mod <- 5.078307  # <-- should be max(disp_wasps$wasps) / max(log1p(disp_aphids$N))
 max_N <- 7.785  # <-- should be ceiling(max(log(disp_aphids$N)) * 1e3) / 1e3
 y_breaks <- log(10^(0:3))

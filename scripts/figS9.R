@@ -1,5 +1,6 @@
 
 source("scripts/_shared.R")
+source("scripts/_shared-stable.R")
 
 
 
@@ -7,27 +8,7 @@ source("scripts/_shared.R")
 file_out <- here("plots/trajectories-field.pdf")
 
 
-# colors for resistant, susceptible, and parasitoid wasps, respectively
-col_pal <- list(r = viridis(100)[50],
-                s = viridis(100)[95],
-                w = viridis(100)[1])
 
-
-# Susceptible line: no resistance, high population growth rate
-line_s <- clonal_line("susceptible",
-                      density_0 = cbind(c(0,0,0,0,32), rep(0, 5)),
-                      surv_juv_apterous = "high",
-                      surv_adult_apterous = "high",
-                      repro_apterous = "high")
-# Resistant line: high resistance, low parasitized-aphid survival rate,
-#                 low population growth rate
-line_r <- clonal_line("resistant",
-                      density_0 = cbind(c(0,0,0,0,32), rep(0, 5)),
-                      resistant = TRUE,
-                      surv_paras = 0.57,
-                      surv_juv_apterous = "low",
-                      surv_adult_apterous = "low",
-                      repro_apterous = "low")
 
 # shared end ----
 
@@ -155,16 +136,17 @@ traj_field_p <- function() {
 }
 
 
-# cairo_pdf(file_out, width = 7, height = 7)
-# traj_field_p()
-# dev.off()
 
-
-#'
-#' If pdfcrop and ghostscript are installed, use `pdfcrop` to trim whitespace.
-#' This isn't necessary to replicate the main plot, but it helps in
-#' incorporating the plot into the final document.
-#'
-if (nzchar(Sys.which("pdfcrop")) && nzchar(tools::find_gs_cmd())) {
-    system2("pdfcrop", shQuote(c(file_out, file_out)), stdout = FALSE)
+if (write_plots) {
+    save_plot(file_out, traj_field_p, w = 7, h = 7)
+    #'
+    #' If pdfcrop and ghostscript are installed, use `pdfcrop` to trim whitespace.
+    #' This isn't necessary to replicate the main plot, but it helps in
+    #' incorporating the plot into the final document.
+    #'
+    if (nzchar(Sys.which("pdfcrop")) && nzchar(tools::find_gs_cmd())) {
+        system2("pdfcrop", shQuote(c(file_out, file_out)), stdout = FALSE)
+    }
+} else {
+    traj_field_p()
 }

@@ -1,17 +1,15 @@
 
 source("scripts/_shared.R")
 
+source("scripts/_shared-stable.R")
 
 
-
-# colors for resistant, susceptible, and parasitoid wasps, respectively
-col_pal <- list(r = viridis(100)[50],
-                s = viridis(100)[95],
-                w = viridis(100)[1])
 
 # Directory where plots produced here will be added:
 plot_dir_out <- here("plots/stable-sims")
-if (!dir.exists(plot_dir_out)) dir.create(plot_dir_out, recursive = TRUE)
+if (!dir.exists(plot_dir_out) && write_plots) {
+    dir.create(plot_dir_out, recursive = TRUE)
+}
 # Names of files produced here:
 plots_out <- list(N = paste0(plot_dir_out, "/stable-sims-aphid_d-abundance.pdf"),
                   P = paste0(plot_dir_out, "/stable-sims-aphid_d-resistance.pdf"))
@@ -36,42 +34,8 @@ clone_eig <- function(sim){
     magnitude <- Re(abs(eig$value[abs(eig$values) == max(abs(eig$values))][1]))
     return(list(value = value, magnitude = magnitude))
 }
-clone_converge <- function(sim, delta, category = "resistant", max_t = 1e4,
-                           tol = 1e-10, perturb = NULL){
 
-    new.starts <- sim$all_info[[1]]
-    pick <- !is.na(new.starts$line) & (new.starts$line == category)
-    new.starts[pick, "N"] <- delta * new.starts[pick, "N"]
 
-    new.sim <- restart_experiment(sim, new_starts = new.starts, max_t = max_t,
-                                  perturb = perturb)
-    ns.df <- new.sim$all_info[[1]]
-
-    S.resistant <- sum(ns.df$N[!is.na(ns.df$line) & ns.df$line == "resistant"])
-    S.susceptible <- sum(ns.df$N[!is.na(ns.df$line) &
-                                     ns.df$line == "susceptible"])
-    test <- (S.resistant/(S.resistant + S.susceptible) > tol)
-    return(test)
-}
-conf_bounds <- function(x, y.lower, y.upper, col="lightgray"){
-    polygon(c(x, rev(x)), c(y.upper, rev(y.lower)), col=col, border=NA)
-}
-
-# Susceptible line: no resistance, high population growth rate
-line_s <- clonal_line("susceptible",
-                      density_0 = cbind(c(0,0,0,0,32), rep(0, 5)),
-                      surv_juv_apterous = "high",
-                      surv_adult_apterous = "high",
-                      repro_apterous = "high")
-# Resistant line: high resistance, low parasitized-aphid survival rate,
-#                 low population growth rate
-line_r <- clonal_line("resistant",
-                      density_0 = cbind(c(0,0,0,0,32), rep(0, 5)),
-                      resistant = TRUE,
-                      surv_paras = 0.57,
-                      surv_juv_apterous = "low",
-                      surv_adult_apterous = "low",
-                      repro_apterous = "low")
 # shared end ----
 
 max_t <- 1e4
@@ -88,10 +52,6 @@ sim <- sim_experiments(clonal_lines = c(line_s, line_r),
                        extinct_N = 1e-10,
                        max_t = max_t, save_every = 1e0)
 sim0 <- sim
-
-# clone_eig(sim)
-
-# between here and `shared end` is from figS8 ----
 
 # Re-run simulations?
 rerun_sims <- !file.exists(tmp_results)
@@ -275,8 +235,8 @@ w$trough.resistant[tail(which(w$trough.resistant == log10(.0001)), -1)] <- NA
 
 # For equilibrium abundances ~ aphid dispersal
 
-cairo_pdf(filename = plots_out$N, height = 4, width = 6)
-{
+ss_aphid_d_abund <- function() {
+
     par(mai=c(0.9, 0.9, 0.1, 0.1))
 
     plot(peak.resistant ~ disp, data = w, typ="l", ylab = "Abundance",
@@ -299,17 +259,19 @@ cairo_pdf(filename = plots_out$N, height = 4, width = 6)
          adj = c(1, 1), font = 2)
 
 }
-dev.off()
 
+if (write_plots) {
+    save_plot(plots_out$N, ss_aphid_d_abund, w = 6, h = 4)
+} else {
+    ss_aphid_d_abund()
+}
 
 
 # For equilibrium proportion resistance ~ aphid dispersal
+ss_aphid_d_resist <- function() {
+    # Threshold to manually prevent crossing over of lines at bifurcation
+    cot <- 0.2582
 
-# Threshold to manually prevent crossing over of lines at bifurcation
-cot <- 0.2582
-
-cairo_pdf(filename = plots_out$P, height = 3.6, width = 5.5)
-{
     par(mai=c(0.1, 0.5, 0.5, 0.1))
 
     plot(stable.equil1 ~ disp, data = www[www$disp < cot,], typ="l",
@@ -334,6 +296,14 @@ cairo_pdf(filename = plots_out$P, height = 3.6, width = 5.5)
            col="dodgerblue")
     lines(unstable.equil.spline ~ disp, data = ww, col = "black", lwd = 3, lty = "45")
 }
-dev.off()
+
+
+
+
+if (write_plots) {
+    save_plot(plots_out$P, ss_aphid_d_resist, w = 5.5, h = 3.6)
+} else {
+    ss_aphid_d_resist()
+}
 
 

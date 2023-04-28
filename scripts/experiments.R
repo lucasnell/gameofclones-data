@@ -2,15 +2,6 @@
 source("scripts/_shared.R")
 
 
-# colors for resistant, susceptible, and parasitoid wasps, respectively
-col_pal <- list(r = viridis(100)[50],
-                s = viridis(100)[95],
-                w = viridis(100)[1])
-# Just for two clones:
-clone_pal <- c(col_pal$r, col_pal$s)
-# Reduce opacity for parasitoid fill:
-wasp_fill <- alpha(col_pal$w, 0.6)
-
 
 # What to name wasp and no wasp cages for plot:
 cage_lvls <- c("parasitism cage" = "wasp", "no parasitism cage" = "no wasp")
@@ -253,19 +244,26 @@ exp_p_list <- aphid_cage_df |>
     map(experiment_plotter)
 
 
-# wrap_plots(exp_p_list, ncol = 1)
+if (write_plots) {
+    for (i in 1:length(exp_p_list)) {
+        fn <- paste0(here("plots/sims-and-exps/"),
+                     sprintf("%i-rep%s.pdf", i, names(exp_p_list)[i]))
+        save_plot(fn, exp_p_list[[i]], 4, 1.25)
+    }; rm(i, fn)
+} else {
+    wrap_plots(exp_p_list, ncol = 1)
+}
 
 
-# for (i in 1:length(exp_p_list)) {
-#     fn <- paste0(here("_results/_plots/sims-and-exps/"),
-#                  sprintf("%i-rep%s.pdf", i, names(exp_p_list)[i]))
-#     save_plot(fn, exp_p_list[[i]], 4, 1.25)
-# }; rm(i, fn)
 
 
 #' Plot used to explain the contamination in rep 11.
-# save_plot(here("_results/_plots/sims-and-exps/99-rep11-ontop.pdf"),
-#           experiment_plotter("11", TRUE), 3, 3)
+if (write_plots) {
+    save_plot(here("plots/sims-and-exps/99-rep11-ontop.pdf"),
+          experiment_plotter("11", TRUE), 3, 3)
+} else {
+    experiment_plotter("11", TRUE)
+}
 
 
 
@@ -314,200 +312,4 @@ cull_df |>
 
 
 
-
-
-
-# ============================================================================*
-# ============================================================================*
-
-# Plants replaced ----
-
-# ============================================================================*
-# ============================================================================*
-
-
-
-
-rplants_mod <- max(alate_cage_df$n_replaced) / max_N
-
-
-exp_rplants_p_list <- aphid_cage_df |>
-    distinct(treatment, rep) |>
-    arrange(treatment, rep) |>
-    getElement("rep") |>
-    paste() |>
-    set_names() |>
-    map(
-        function(r) {
-            # r = levels(aphid_cage_df$rep)[1]
-            # rm(r, acd, prd)
-            acd <- aphid_cage_df |>
-                filter(rep == r) |>
-                rename(N = !!sym(aphid_y))
-            prd <- alate_cage_df |>
-                filter(rep == r, line == "resistant") |>
-                mutate(N = n_replaced / rplants_mod)
-            p <- acd |>
-                ggplot(aes(days, N, color = line)) +
-                geom_hline(yintercept = 0, color = "gray70") +
-                # Lines for number of plants replaced:
-                geom_area(data = prd, fill = "gray60", color = NA) +
-                # geom_line(data = prd, linewidth = 0.5, color = "gray60") +
-                # Main abundance lines:
-                geom_line() +
-                # Points for early termination:
-                geom_point(data = filter(acd, terminated), shape = 4, size = 3) +
-                scale_color_manual(values = clone_pal, guide = "none") +
-                scale_y_continuous(sec.axis = sec_axis(~ . * rplants_mod,
-                                                       breaks = 0:2 * 5),
-                                   limits = c(0, max_N),
-                                   breaks = log1p(c(0, 40, 4000)),
-                                   labels = c(0, 40, 4000)) +
-                scale_x_continuous("Days", limits = c(0, 250),
-                                   breaks = 0:5 * 50) +
-                facet_grid( ~ cage, scales = "fixed") +
-                theme(strip.text.x = element_blank(),
-                      strip.text.y = element_blank(),
-                      axis.title.y = element_blank()) +
-                coord_cartesian(clip = FALSE)
-            if (r != "13") {
-                p <- p +
-                    theme(axis.title.x = element_blank(),
-                          axis.text.x = element_blank())
-            }
-            return(p)
-        })
-
-
-
-exp_rplants_lm_p <- aphid_cage_df |>
-    mutate(id = interaction(treatment, rep, cage, line, drop = TRUE)) |>
-    split(~id, drop = TRUE) |>
-    map_dfr(function(dd) {
-        left_join(select(dd, days, log_aphids),
-                  alate_cage_df |>
-                      filter(treatment == dd$treatment[1], rep == dd$rep[1],
-                             cage == dd$cage[1], line == dd$line[1]) |>
-                      select(days, n_replaced),
-                  by = "days") |>
-            mutate(pcg = log_aphids - lag(log_aphids)) |>
-            filter(!is.na(pcg)) |>
-            mutate(treatment = dd$treatment[1], rep = dd$rep[1],
-                   cage = dd$cage[1], line = dd$line[1])
-    }) |>
-    ggplot(aes(n_replaced, pcg)) +
-    geom_hline(yintercept = 0, color = "gray60") +
-    geom_point(alpha = 0.25) +
-    stat_smooth(formula = y ~ x, method = "lm", se = TRUE) +
-    xlab(expression("Number of plants replaced on day " * italic(t))) +
-    ylab(expression("Per-capita growth rate (log[" * italic(N[t]) /
-                        italic(N[t-1]) * "])")) +
-    theme(strip.text = element_text(size = 10),
-          axis.title = element_text(size = 9))
-
-
-exp_rplants_p <- wrap_elements(grid::textGrob(expression("Aphid abundance ("
-                                                         %*% 1000 * ")"),
-                             x = 0, vjust = 1, rot = 90)) +
-    wrap_plots(exp_rplants_p_list, ncol = 1) +
-    wrap_elements(grid::textGrob("Plants replaced (gray shading)",
-                                 x = 1, vjust = 1, rot = -90)) +
-    exp_rplants_lm_p +
-    plot_layout(widths = c(0.06, 1, 0.06), heights = c(1, 0.3),
-                nrow = 2, ncol = 3, design = "123
-                                              #4#") +
-    plot_annotation(tag_levels = list(c("", LETTERS[1:7], "", LETTERS[8]))) &
-    theme(plot.tag = element_text(size = 14, face = "bold"))
-
-
-
-# exp_rplants_p
-
-
-# save_plot("_results/_plots/repl-plants.pdf", exp_rplants_p, 6, 12)
-
-
-
-
-# ============================================================================*
-# ============================================================================*
-
-#  Dispersal proportion ----
-
-# ============================================================================*
-# ============================================================================*
-
-
-
-left_join(aphid_cage_df, alate_cage_df,
-          by = c("treatment", "rep", "cage", "days", "line")) |>
-    # Filter out isolated treatments:
-    filter(treatment != "isolated") |>
-    # Filter out observations from before we were dispersing alates
-    # on the tops of plants:
-    filter(!(rep %in% 6:10 &
-                 days < as.integer(difftime(as.Date("2021-08-23"),
-                                            as.Date("2021-06-14"),
-                                            units = "days")))) |>
-    # Filter out the beginnings of each period because it takes some time
-    # for alates to show up
-    filter(days > 20) |>
-    mutate(dispersed = alates_total / 2) |>
-    # Control for rare scenario where there were lots of alates on the
-    # sides/tops but few on plants, so alates_total > aphids
-    mutate(aphids = ifelse(alates_total > aphids, alates_total + aphids, aphids)) |>
-    filter(aphids > 0) |>
-    mutate(p_dispersed = dispersed / aphids) |>
-    group_by(cage, line) |>
-    summarize(p_dispersed = mean(p_dispersed), nobs = n(), .groups = "drop")
-
-
-
-
-
-
-# ============================================================================*
-# ============================================================================*
-
-# Stats on things the techs counted ----
-
-# ============================================================================*
-# ============================================================================*
-
-
-base_df <- here("data-raw/experiments-main.csv") |>
-    read_csv(col_types = cols()) |>
-    filter(observer != "LAN") |>
-    rowwise() |>
-    mutate(n_aphids = sum(c_across(starts_with("plant"))),
-           n_alates_in = sum(c_across(starts_with("alates_in_")))) |>
-    mutate(n_repl_plants = replaced_plants |>
-               str_split(",") |>
-               map_int(length)) |>
-    select(-starts_with("plant"), -starts_with("alates_in_"), -replaced_plants)
-
-# Total aphids counted, alates dispersed, plants replaced:
-for (n in c("n_aphids", "n_alates_in", "n_repl_plants")) {
-    x <- base_df |>
-        filter(!!sym(n) >= 0) |>
-        getElement(n) |>
-        sum()
-    cat(sprintf("Total %s = %i\n", n, x))
-}; rm(n, x)
-
-# Total wasps and mummies counted:
-for (n in c("wasps", "mummies")) {
-    x <- base_df |>
-        filter(rep == 7) |>
-        filter(!!sym(n) >= 0) |>
-        filter(!is.na(!!sym(n))) |>
-        getElement(n) |>
-        sum()
-    y <- wasp_cage_df |>
-        filter(!!sym(n) >= 0) |>
-        filter(!is.na(!!sym(n))) |>
-        getElement(n) |>
-        sum()
-    cat(sprintf("Total %s = %i\n", n, x + y))
-}; rm(n, x, y)
 

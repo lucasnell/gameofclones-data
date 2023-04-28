@@ -1,5 +1,7 @@
 
 source("scripts/_shared.R")
+source("scripts/_shared-stable.R")
+
 
 library(plot3D)
 
@@ -9,40 +11,7 @@ file_out <- here("plots/stationary-points.pdf")
 
 
 
-clone_traj <- function(sim, delta, category = "resistant", max_t = 400,
-                       perturb = NULL){
 
-    new.starts <- sim$all_info[[1]]
-    pick <- !is.na(new.starts$line) & (new.starts$line == category)
-    new.starts[pick, "N"] <- delta * new.starts[pick, "N"]
-
-    new.sim <- restart_experiment(sim, new_starts = new.starts, max_t = max_t,
-                                  perturb = perturb)
-    new.sim <- rm_tibs(new.sim)
-    d <- new.sim$aphids
-    d$line.type <- paste0(d$line,".", d$type)
-    d$line.type[d$line.type == "NA.mummy"] <- "mummy"
-    d <- d[,-c(1,5,6)]
-    d <- spread(d, "line.type", "N")
-    d <- cbind(delta = delta, d, wasps = new.sim$wasps[,4])
-    return(d)
-}
-
-# Susceptible line: no resistance, high population growth rate
-line_s <- clonal_line("susceptible",
-                      density_0 = cbind(c(0,0,0,0,32), rep(0, 5)),
-                      surv_juv_apterous = "high",
-                      surv_adult_apterous = "high",
-                      repro_apterous = "high")
-# Resistant line: high resistance, low parasitized-aphid survival rate,
-#                 low population growth rate
-line_r <- clonal_line("resistant",
-                      density_0 = cbind(c(0,0,0,0,32), rep(0, 5)),
-                      resistant = TRUE,
-                      surv_paras = 0.57,
-                      surv_juv_apterous = "low",
-                      surv_adult_apterous = "low",
-                      repro_apterous = "low")
 # shared end ----
 
 
@@ -115,6 +84,10 @@ stat_points_p <- function() {
 }
 
 
-# cairo_pdf(filename = file_out, width = 10, height = 4)
-# stat_points_p()
-# dev.off()
+if (write_plots) {
+    save_plot(file_out, stat_points_p, w = 10, h = 4)
+} else {
+    stat_points_p()
+}
+
+

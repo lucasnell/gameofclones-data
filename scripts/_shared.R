@@ -30,6 +30,11 @@ suppressPackageStartupMessages({
 #'
 
 
+#' Create new plot files?
+#' `FALSE` allows you simply view them without writing new pdf files to disk.
+#' `TRUE` will generate the plots in the `plots` directory.
+write_plots <- FALSE
+
 
 # Change to max number of threads you want to use:
 .n_threads <- max(detectCores()-2L, 1L)
@@ -37,6 +42,16 @@ suppressPackageStartupMessages({
 options(boot.ncpus = .n_threads)
 options(mc.cores = .n_threads)
 options(boot.parallel = ifelse(.Platform$OS.type != "windows", "multicore", "no"))
+
+
+# colors for resistant, susceptible, and parasitoid wasps, respectively
+col_pal <- list(r = viridis(100)[50],
+                s = viridis(100)[95],
+                w = viridis(100)[1])
+# Just for two clones:
+clone_pal <- c(col_pal$r, col_pal$s)
+# Reduce opacity for parasitoid fill:
+wasp_fill <- alpha(col_pal$w, 0.6)
 
 
 #' Run mclapply on unix system, run lapply on anything else.
@@ -94,3 +109,21 @@ save_plot <- function(fn, p, w, h, seed = NULL, ...) {
 }
 
 
+
+
+
+# Define clonal lines. Don't re-define these!
+# Susceptible line: no resistance, high population growth rate
+line_s <- clonal_line("susceptible",
+                      density_0 = cbind(c(0,0,0,0,32), rep(0, 5)),
+                      surv_juv_apterous = "high",
+                      surv_adult_apterous = "high",
+                      repro_apterous = "high")
+# Resistant line: high resistance, low population growth rate
+line_r <- clonal_line("resistant",
+                      density_0 = cbind(c(0,0,0,0,32), rep(0, 5)),
+                      resistant = TRUE,
+                      surv_paras = 0.57,
+                      surv_juv_apterous = "low",
+                      surv_adult_apterous = "low",
+                      repro_apterous = "low")
