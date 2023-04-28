@@ -48,7 +48,3 @@ po/*~
 # RStudio Connect folder
 rsconnect/
 
-
-# Folder full of plot PDFs that scripts generate:
-plots
-

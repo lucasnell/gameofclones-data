@@ -4,6 +4,12 @@ Data on eco-evolutionary dynamics in pea aphids and parasitoids,
 plus scripts that analyze these data and use `gameofclones` package
 to simulate the system.
 
+Most of the code here was written by
+[Lucas A. Nell](https://github.com/lucasnell) with some by 
+[Anthony R. Ives](https://github.com/arives).
+You can send questions to LAN unless a script explicitly says it was
+written by ARI.
+
 
 # Replicating environment
 
