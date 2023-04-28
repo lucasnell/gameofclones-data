@@ -1,5 +1,5 @@
 
-source("scripts/_shared.R")
+source("scripts/_shared-all.R")
 
 #' Contains code that shared among all `scripts/field-*.R` files,
 #' including reading and cleaning up the data frame containing
