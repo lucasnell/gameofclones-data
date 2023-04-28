@@ -1,4 +1,4 @@
-# `data` directory
+# `data-raw` directory
 
 This directory contains the raw data from the experiments and some preliminary
 assays. File descriptions are below.
@@ -155,7 +155,7 @@ Column descriptions:
   identified as male
 * `adults unk.`: number of adult wasps found and removed that were not 
   identified by sex
-* `notes`: other information, such as checking that occurred without recording
+* `notes`: other information, such as removals that occurred without recording
   numbers
 
 
@@ -195,27 +195,17 @@ Column descriptions:
 * `ham`: 1 or 0 for whether this clone was infected with *H. defensa*
 
 
-## Other files not present immediately
 
+## Files from other sources
 
 Data from Ives et al. (2020) are used in files `scripts/field-data-maps.R` and
 `scripts/field-data-time-series.R`.
-These data are not provided in this repository.
+These data are not provided in this repository since they are not ours to share.
 To create the plots that used data from Ives et al. (2020) (fig. 1),
 you should download them from <https://doi.org/10.6084/m9.figshare.11828865.v1>.
 Then rename
 `Ives et al. 2020 Data Fig2_1.csv` to `parasitism-2001-2016.csv`
 and
 `Ives et al. 2020 Data Fig3A.csv` to `symbionts-2012-2017.csv`
-Lastly, put both inside the `data` folder.
-
-
-The following files are referred to in this repo's scripts and are simply 
-intermediate files containing simulation code that takes a while to run:
-
-* `stable-sims-aphid_d.csv`: Simulations of how aphid dispersal affect the
-  final states of the system. See `scripts/stable-sims-aphid_d.R` for more.
-* `stable-sims-wasp_d.csv`: Simulations of how wasp dispersal affect the
-  final states of the system. See `scripts/stable-sims-wasp_d.R` for more.
-
+Lastly, put both inside the `data-raw` folder.
 

@@ -56,3 +56,36 @@ remotes::install_github("lucasnell/gameofclones")
 
 
 
+# Data from other sources
+
+Data from Ives et al. (2020) are used in files `scripts/field-data-maps.R` and
+`scripts/field-data-time-series.R`.
+These data are not provided in this repository since they're not ours to share.
+To run these scripts and create plots of field data,
+you should download these additional data from
+<https://doi.org/10.6084/m9.figshare.11828865.v1>.
+Then rename
+`Ives et al. 2020 Data Fig2_1.csv` to `parasitism-2001-2016.csv`
+and
+`Ives et al. 2020 Data Fig3A.csv` to `symbionts-2012-2017.csv`
+Lastly, put both inside the `data-raw` folder.
+
+If you're on a unix computer (this was test on a mac), you can do run this
+from the command line (obviously first replacing `/path/to` with where
+`gameofclones-data` is located):
+
+```bash
+cd /path/to/gameofclones-data
+wget --content-disposition https://figshare.com/ndownloader/files/21697344
+unzip "Code and Data for Ives et al. (2020).zip"
+rm "Code and Data for Ives et al. (2020).zip"
+# remove spaces for convenience
+mv "Code and Data for Ives et al. (2020)" ives2020
+cd ives2020
+mv "Ives et al. 2020 Data Fig2_1.csv" parasitism-2001-2016.csv
+mv "Ives et al. 2020 Data Fig3A.csv" symbionts-2012-2017.csv
+mv parasitism-2001-2016.csv symbionts-2012-2017.csv ../data-raw/
+cd ..
+rm -r ives2020
+```
+

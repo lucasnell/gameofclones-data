@@ -16,7 +16,7 @@ if (!dir.exists(plot_dir_out)) dir.create(plot_dir_out, recursive = TRUE)
 plots_out <- list(N = paste0(plot_dir_out, "/stable-sims-wasp_d-abundance.pdf"),
                   P = paste0(plot_dir_out, "/stable-sims-wasp_d-resistance.pdf"))
 # Name of temporary results file produced here:
-tmp_results <- here("data/stable-sims-wasp_d.csv")
+tmp_results <- here("data-interm/stable-sims-wasp_d.csv")
 
 
 

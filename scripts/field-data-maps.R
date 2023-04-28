@@ -32,7 +32,7 @@ library(rnaturalearthdata)  # used for ne_countries
 
 
 par_df <- list(
-    here("data/parasitism-2001-2016.csv") |>
+    here("data-raw/parasitism-2001-2016.csv") |>
         read_csv(col_types = cols()) |>
         select(field, Cycle, DateFormat, year, day, para, paraN) |>
         rename(cycle = Cycle, para_n = paraN, date = DateFormat) |>
@@ -223,7 +223,7 @@ obs_par_df <- obs_par_df |>
 
 
 
-fields_sf <- st_read(here("data/Arlington.geojson")) |>
+fields_sf <- st_read(here("data-raw/Arlington.geojson")) |>
     st_transform(st_crs(3857)) |>
     mutate(geometry = st_centroid(geometry)) |>
     rename(geom = geometry)

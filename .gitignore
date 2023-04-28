@@ -53,10 +53,8 @@ rsconnect/
 plots
 
 # Temporary files not needed here:
-data/stable-sims-aphid_d.csv
-data/stable-sims-wasp_d.csv
 *.xlsx
 
 # Files from another paper that shouldn't be distributed by me:
-data/parasitism-2001-2016.csv
-data/symbionts-2012-2017.csv
+data-raw/parasitism-2001-2016.csv
+data-raw/symbionts-2012-2017.csv

@@ -75,7 +75,7 @@ maps_dates <- as.Date(c("2015-06-03", "2015-06-12", "2015-06-19",
 
 
 par_df <- list(
-    here("data/parasitism-2001-2016.csv") |>
+    here("data-raw/parasitism-2001-2016.csv") |>
         read_csv(col_types = cols()) |>
         select(field, Cycle, DateFormat, year, day, para, paraN) |>
         rename(cycle = Cycle, para_n = paraN, date = DateFormat) |>
@@ -148,13 +148,13 @@ par_df <- list(
 
 
 
-older_ham_df <- here("data/symbionts-2018-2019.csv") |>
+older_ham_df <- here("data-raw/symbionts-2018-2019.csv") |>
     read_csv(col_types = cols()) |>
     base::`[`()
 
 
 
-newer_ham_df <- here("data/symbionts-2012-2017.csv") |>
+newer_ham_df <- here("data-raw/symbionts-2012-2017.csv") |>
     read_csv(col_types = cols()) |>
     mutate(season = case_when(is.na(date) ~ "fall",
                               late == 1 ~ "fall",

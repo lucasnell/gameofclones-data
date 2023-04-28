@@ -11,7 +11,7 @@ source("scripts/_shared.R")
 
 
 
-col_counts <- here("data/alate-counts.csv") |>
+col_counts <- here("data-raw/alate-counts.csv") |>
     read_csv(col_types = cols()) |>
     mutate(sample_date = as.Date(sample_date, "%m/%d/%Y"),
            date = as.Date(date, "%m/%d/%Y"),

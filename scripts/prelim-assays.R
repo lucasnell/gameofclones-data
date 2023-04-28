@@ -35,7 +35,7 @@ clone_pal <- c(col_pal$r, col_pal$s)
 
 
 
-pop_df <- here("data/assays-population_growth.csv") |>
+pop_df <- here("data-raw/assays-population_growth.csv") |>
     read_csv() |>
     mutate(date = as.Date(paste(year, month, day, sep = "-")),
            rep = factor(rep)) |>
@@ -119,11 +119,11 @@ pop_p <- pop_df |>
 
 
 wasp_df <- bind_rows(
-    here("data/assays-wasp_resistance_choice.csv") |>
+    here("data-raw/assays-wasp_resistance_choice.csv") |>
         read_csv(col_types = cols()) |>
         select(wasp_group, line, starts_with(c("juv","adult-", "mumm"))) |>
         mutate(set = 1L),
-    here("data/assays-wasp_resistance_no_choice.csv") |>
+    here("data-raw/assays-wasp_resistance_no_choice.csv") |>
         read_csv(col_types = cols()) |>
         select(wasp_group, round, line,
                starts_with(c("juv", "adult-", "mumm"))) |>

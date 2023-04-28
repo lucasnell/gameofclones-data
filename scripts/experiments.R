@@ -16,7 +16,7 @@ wasp_fill <- alpha(col_pal$w, 0.6)
 cage_lvls <- c("parasitism cage" = "wasp", "no parasitism cage" = "no wasp")
 
 
-exp_df <- here("data/experiments-main.csv") |>
+exp_df <- here("data-raw/experiments-main.csv") |>
     read_csv(col_types = cols()) |>
     #'
     #' Rep 7 failed bc wasps got into the no-wasp cage, and we didn't
@@ -62,7 +62,7 @@ exp_df <- here("data/experiments-main.csv") |>
 
 # "Pesky" wasps - wasps that made it into no-wasp cages:
 
-pesky_df <- here("data/experiments-pesky_wasps.csv") |>
+pesky_df <- here("data-raw/experiments-pesky_wasps.csv") |>
     read_csv(col_types = cols()) |>
     select(rep, date, mummies, starts_with("adult")) |>
     #' On 3/16 and 3/22 I removed wasps/mummies but didn't record the number.
@@ -475,7 +475,7 @@ left_join(aphid_cage_df, alate_cage_df,
 # ============================================================================*
 
 
-base_df <- here("data/experiments-main.csv") |>
+base_df <- here("data-raw/experiments-main.csv") |>
     read_csv(col_types = cols()) |>
     filter(observer != "LAN") |>
     rowwise() |>
