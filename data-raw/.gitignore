@@ -1,0 +1,6 @@
+# Files from another paper that shouldn't be distributed by me:
+parasitism-2001-2016.csv
+symbionts-2012-2017.csv
+
+# Temporary files not needed here:
+*.xlsx
