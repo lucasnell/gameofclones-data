@@ -1,6 +1,4 @@
 
-source("scripts/_shared-all.R")
-
 
 
 #' These simulations are to plan and create a priori hypotheses for the
@@ -30,6 +28,8 @@ source("scripts/_shared-all.R")
 #' represents evolution in the aphid population.
 #'
 
+
+source("scripts/00-shared-all.R")
 
 
 para_lvls <- paste(c("no parasitism", "parasitism"), "patch")

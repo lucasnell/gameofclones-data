@@ -1,11 +1,17 @@
 
-source("scripts/_shared-all.R")
-source("scripts/_shared-stable.R")
+#' This makes figure S12:
+#' For the model parameterized for the field data (fig. 3C,D), time
+#' trajectories of susceptible aphid clones (yellow), resistant clones (green),
+#' and parasitoids (purple).
+
+source("scripts/00-shared-all.R")
+source("scripts/04-stability/00-stability-shared.R")
 
 
 
 # File name for figure:
-file_out <- here("plots/trajectories-greater-dispersal.pdf")
+file_out <- here("plots/trajectories-field.pdf")
+
 
 
 
@@ -16,6 +22,8 @@ delta.list <- exp(.5*(-10:10))
 
 # baseline
 wasp.disp.list <- sort(c(.002*(0:25), .001,.003))
+pick.wasp.disp <- 10
+wasp.disp <- wasp.disp.list[pick.wasp.disp]
 
 disp <- .2
 a <- 2.32
@@ -45,17 +53,12 @@ perturb$how[perturb$who == "mummies"] <- 0
 
 perturb <- perturb[1:(3*n.events),]
 
-pick.wasp.disp.list <- 16:17
 
 
+traj_field_p <- function() {
+	for(remove in c(TRUE,FALSE)){
 
-
-traj_great_disp_p <- function() {
-
-	for(pick.wasp.disp in pick.wasp.disp.list){
-
-		wasp.disp <- wasp.disp.list[pick.wasp.disp]
-		if(pick.wasp.disp == pick.wasp.disp.list[1]) {
+		if(remove) {
 			par(mfrow=c(2,1), mai=c(.1,1,.8,.1))
 			xaxt <- "n"
 			plab <- "A"
@@ -67,7 +70,16 @@ traj_great_disp_p <- function() {
 			plab_y <- 0.5
 		}
 
-		sim <- sim_experiments(clonal_lines = c(line_s, line_r),
+		if(remove) density_0 <- cbind(c(0,0,0,0,0), rep(0, 5)) else density_0 <- cbind(c(0,0,0,0,32), rep(0, 5))
+		line_r_pert <- clonal_line("resistant",
+	                      density_0 = density_0,
+	                      resistant = TRUE,
+	                      surv_paras = 0.57,
+	                      surv_juv_apterous = "low",
+	                      surv_adult_apterous = "low",
+	                      repro_apterous = "low")
+
+		sim <- sim_experiments(clonal_lines = c(line_s, line_r_pert),
 								n_fields = n_fields,
 								wasp_density_0 = wasp_density_0,
 								alate_field_disp_p = disp,
@@ -106,30 +118,32 @@ traj_great_disp_p <- function() {
 		})
 		axis(2,at=aty,labels=y_labels, las=1)
 		grid.text(plab, x = unit(0, "npc"), y = unit(plab_y, "npc"),
-		          just = c("left", "top"),
-		          gp = gpar(fontsize = 18, fontface = "bold"))
+		                just = c("left", "top"),
+		                gp = gpar(fontsize = 18, fontface = "bold"))
 		lines(N ~ time0, data=w[w$field == i.field & w$line == "susceptible" & w$type == "apterous",], col=col_pal$s, lwd = 2)
 		lines(wasps ~ time0, data=ww[ww$field == i.field,], col=col_pal$w, lwd = 2)
 		for(i.field in c(1,3,4)){
-			lines(N ~ time0, data=w[w$field == i.field & w$line == "resistant" & w$type == "apterous",], col=alpha(col_pal$r, .alpha), lwd = .lwd, lty=.lty)
-			lines(N ~ time0, data=w[w$field == i.field & w$line == "susceptible" & w$type == "apterous",], col=alpha(col_pal$s, .alpha), lwd = .lwd, lty=.lty)
-			lines(wasps ~ time0, data=ww[ww$field == i.field,], col=alpha(col_pal$w, .alpha), lwd = .lwd, lty=.lty)
+		    lines(N ~ time0, data=w[w$field == i.field & w$line == "resistant" & w$type == "apterous",], col=alpha(col_pal$r, .alpha), lwd = .lwd, lty=.lty)
+		    lines(N ~ time0, data=w[w$field == i.field & w$line == "susceptible" & w$type == "apterous",], col=alpha(col_pal$s, .alpha), lwd = .lwd, lty=.lty)
+		    lines(wasps ~ time0, data=ww[ww$field == i.field,], col=alpha(col_pal$w, .alpha), lwd = .lwd, lty=.lty)
 		}
 
-		if(pick.wasp.disp == pick.wasp.disp.list[1]) {
-		    text(c(60, 190, 250), c(3e-1, 1e3, 1e-4),
-		         col = unlist(col_pal[c("r","s","w")]), font=2, adj=c(0,0.5),
-		         labels = c("resistant", "susceptible", "parasitoids"))
+		if (remove) {
+		    text(c(0, 0), c(1e-3, 3e3), col = c(col_pal$w, col_pal$s), font = 2,
+		         labels = c("parasitoids", "susceptible"), adj = c(0,0.5))
+		} else {
+		    text(110, 2e3, col = col_pal$r, labels = "resistant", adj = c(0,0.5), font = 2)
 		}
+
+
 	}
 
-    invisible(NULL)
 }
 
 
 
 if (write_plots) {
-    save_plot(file_out, traj_great_disp_p, w = 7, h = 7)
+    save_plot(file_out, traj_field_p, w = 7, h = 7)
     #'
     #' If pdfcrop and ghostscript are installed, use `pdfcrop` to trim whitespace.
     #' This isn't necessary to replicate the main plot, but it helps in
@@ -139,5 +153,5 @@ if (write_plots) {
         system2("pdfcrop", shQuote(c(file_out, file_out)), stdout = FALSE)
     }
 } else {
-    traj_great_disp_p()
+    traj_field_p()
 }

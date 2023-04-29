@@ -1,4 +1,7 @@
 
+#' Code shared among more than one of the `04-stability` files.
+
+
 clone_converge <- function(sim, delta, category = "resistant", max_t = 1e4,
                            tol = 1e-10, perturb = NULL){
 

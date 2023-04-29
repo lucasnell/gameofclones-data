@@ -1,5 +1,5 @@
 #'
-#' Contains code that shared among all `scripts/field-*.R` files,
+#' Contains code that is shared among all `01-field` files,
 #' including reading and cleaning up the data frame containing
 #' parasitism data.
 #'

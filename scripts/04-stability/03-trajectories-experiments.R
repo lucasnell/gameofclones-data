@@ -1,6 +1,10 @@
 
-source("scripts/_shared-all.R")
-source("scripts/_shared-stable.R")
+#' This file makes figure S8:
+#' Example trajectories for the model parameterized for the experiment (fig. 2)
+#' in which parasitoids occur only in patch 1
+
+source("scripts/00-shared-all.R")
+source("scripts/04-stability/00-stability-shared.R")
 
 
 # File name for figure:

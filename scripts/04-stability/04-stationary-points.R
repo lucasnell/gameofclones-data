@@ -1,6 +1,11 @@
 
-source("scripts/_shared-all.R")
-source("scripts/_shared-stable.R")
+#' This makes figure S9:
+#' Illustration of three stationary points in the model parameterized for the
+#' lab experiment.
+
+
+source("scripts/00-shared-all.R")
+source("scripts/04-stability/00-stability-shared.R")
 
 
 library(plot3D)

@@ -1,10 +1,7 @@
 
-source("scripts/_shared-all.R")
+source("scripts/00-shared-all.R")
 
-#' Contains code that shared among all `scripts/field-*.R` files,
-#' including reading and cleaning up the data frame containing
-#' parasitism data.
-source("scripts/_shared-field.R")
+source("scripts/01-field/00-field-shared.R")
 
 
 

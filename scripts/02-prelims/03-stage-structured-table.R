@@ -3,7 +3,7 @@
 #' Create LaTeX table of stage-structured parameters.
 #'
 
-source("scripts/_shared-all.R")
+source("scripts/00-shared-all.R")
 
 
 

@@ -1,7 +1,14 @@
 
-source("scripts/_shared-all.R")
+#'
+#' This file makes figures 3B and S11. Both relate to how wasp dispersal
+#' changes the stability and equilibrium states of the system using simulations
+#' that match the field.
+#'
 
-source("scripts/_shared-stable.R")
+
+source("scripts/00-shared-all.R")
+
+source("scripts/04-stability/00-stability-shared.R")
 
 
 
