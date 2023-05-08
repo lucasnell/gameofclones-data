@@ -1,7 +1,9 @@
 
-#' This makes figure S13:
+#' This makes the following figure:
 #' Consequences of increasing parasitoid dispersal on the persistence of the
 #' resistant clone.
+#' See `scripts/README.md` for the figure number(s).
+
 
 source("scripts/00-shared-all.R")
 source("scripts/04-stability/00-stability-shared.R")

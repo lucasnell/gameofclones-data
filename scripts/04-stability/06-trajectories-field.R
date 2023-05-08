@@ -1,8 +1,9 @@
 
-#' This makes figure S12:
-#' For the model parameterized for the field data (fig. 3C,D), time
+#' This makes the following figure:
+#' For the model parameterized for the field data, time
 #' trajectories of susceptible aphid clones (yellow), resistant clones (green),
 #' and parasitoids (purple).
+#' See `scripts/README.md` for the figure number(s).
 
 source("scripts/00-shared-all.R")
 source("scripts/04-stability/00-stability-shared.R")

@@ -1,7 +1,9 @@
 
-#' This makes figure S9:
+#' This makes the following figure:
 #' Illustration of three stationary points in the model parameterized for the
 #' lab experiment.
+#' See `scripts/README.md` for the figure number(s).
+
 
 
 source("scripts/00-shared-all.R")

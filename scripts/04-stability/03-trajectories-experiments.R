@@ -1,7 +1,9 @@
 
-#' This file makes figure S8:
-#' Example trajectories for the model parameterized for the experiment (fig. 2)
+#' This file makes the following figure:
+#' Example trajectories for the model parameterized for the experiment
 #' in which parasitoids occur only in patch 1
+#' See `scripts/README.md` for the figure number(s).
+
 
 source("scripts/00-shared-all.R")
 source("scripts/04-stability/00-stability-shared.R")

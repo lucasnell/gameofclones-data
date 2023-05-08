@@ -26,8 +26,8 @@ Folder contents:
 │   ├── 02-wasp-dispersal.R
 │   ├── 03-trajectories-experiments.R
 │   ├── 04-stationary-points.R
-│   ├── 05-trajectories-field-high-d.R
-│   └── 06-trajectories-field.R
+│   ├── 05-trajectories-field.R
+│   └── 06-trajectories-field-high-d.R
 └── README.md
 ```
 
@@ -57,7 +57,7 @@ through time and space.
   files, including reading and cleaning up the data frame containing 
   parasitism data.
 
-* `01-field-time-series.R` creates figures 1A, 1B, and S14.
+* `01-field-time-series.R` creates figures 1A, 1B, and S16.
   These plots show proportion of aphids parasitized and infected with
   *Hamiltonella defensa* through time at our research site from 2011--2019.
 
@@ -75,7 +75,7 @@ we used for simulations and/or experiments.
   we maintain in the lab. These results are described in the "Simulations" 
   section in the materials and methods.
 
-* `02-prelim-assays.R` creates figures S4 and S5 that show differences
+* `02-prelim-assays.R` creates figures S5 and S6 that show differences
   differences among our experimental clones in how well they compete without
   parasitoids and how well they resist parasitism. These scripts also contain
   the analyses testing for these differences.
@@ -91,12 +91,12 @@ The third group (folder `03-experiments`) relates to the experiments and the
 simulations we did beforehand to develop predictions for them.
 
 
-* `01-exper-sims.R` creates figures 2A, 2B, S2, and S3. These are the simulations
+* `01-exper-sims.R` creates figures 2A, 2B, S2, S3, and S4. These are the simulations
   I did to help understand the system before the experiments.
   They include how dispersal, starting resistance, and later perturbations
   affect the outcomes of the *in silico* experiment.
 
-* `02-experiments.R` creates figure 2C, 2D, S6, and S7. These plots show
+* `02-experiments.R` creates figure 2C, 2D, S7, and S8. These plots show
   the empirical results from the experiments.
 
 
@@ -110,29 +110,29 @@ These were written by Anthony R. Ives.
 * `00-stability-shared.R` contains code that is shared among at least two
   `4-stability` files.
 
-* `01-aphid-dispersal.R` makes figures 3A and S10. Both relate to how aphid dispersal
+* `01-aphid-dispersal.R` makes figures 3A, S11, and S12. Both relate to how aphid dispersal
   changes the stability and equilibrium states of the system using simulations
   that match the experiments.
 
-* `02-wasp-dispersal.R` makes figures 3B and S11. Both relate to how wasp dispersal
+* `02-wasp-dispersal.R` makes figures 3B and S13. Both relate to how wasp dispersal
   changes the stability and equilibrium states of the system using simulations
   that match the field.
 
-* `03-trajectories-experiments.R` creates figure S8:
+* `03-trajectories-experiments.R` creates figure S9:
   'Example trajectories for the model parameterized for the experiment (fig. 2)
   in which parasitoids occur only in patch 1.'
 
-* `04-stationary-points.R` creates figure S9:
+* `04-stationary-points.R` creates figure S10:
   'Illustration of three stationary points in the model parameterized for the
   lab experiment.'
 
-* `05-trajectories-field-high-d.R` creates figure S13:
-  'Consequences of increasing parasitoid dispersal on the persistence of the
-  resistant clone.'
-
-* `06-trajectories-field.R` creates figure S12:
+* `05-trajectories-field.R` creates figure S14:
   'For the model parameterized for the field data (fig. 3C,D), time
   trajectories of susceptible aphid clones (yellow), resistant clones (green),
   and parasitoids (purple).'
+
+* `06-trajectories-field-high-d.R` creates figure S15:
+  'Consequences of increasing parasitoid dispersal on the persistence of the
+  resistant clone.'
 
 

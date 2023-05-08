@@ -1,8 +1,9 @@
 
 #'
-#' This file makes figures 3A and S10. Both relate to how aphid dispersal
+#' This file makes figures that relate to how aphid dispersal
 #' changes the stability and equilibrium states of the system using simulations
 #' that match the experiments.
+#' See `scripts/README.md` for the figure number(s).
 #'
 
 

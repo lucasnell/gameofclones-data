@@ -1,8 +1,9 @@
 
 #'
-#' This file makes figures 3B and S11. Both relate to how wasp dispersal
+#' This file makes figures related to how wasp dispersal
 #' changes the stability and equilibrium states of the system using simulations
 #' that match the field.
+#' See `scripts/README.md` for the figure number(s).
 #'
 
 
