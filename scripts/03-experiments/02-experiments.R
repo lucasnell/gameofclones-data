@@ -237,7 +237,7 @@ experiment_plotter <- function(r, ontop = FALSE, show_terminations = TRUE) {
 
 exp_p_list <- aphid_cage_df |>
     distinct(treatment, rep) |>
-    arrange(treatment, rep) |>
+    arrange(desc(treatment), rep) |>
     getElement("rep") |>
     paste() |>
     set_names() |>
@@ -246,10 +246,11 @@ exp_p_list <- aphid_cage_df |>
 
 if (write_plots) {
     for (i in 1:length(exp_p_list)) {
-        fn <- paste0(here("plots/sims-and-exps/"),
-                     sprintf("%i-rep%s.pdf", i, names(exp_p_list)[i]))
+        j <- as.integer(names(exp_p_list)[i])
+        fn <- paste0(here("plots/03-experiments/exper-and-sims/"),
+                     sprintf("%02i-rep%02i.pdf", i, j))
         save_plot(fn, exp_p_list[[i]], 4, 1.25)
-    }; rm(i, fn)
+    }; rm(i, j, fn)
 } else {
     wrap_plots(exp_p_list, ncol = 1)
 }
@@ -259,7 +260,7 @@ if (write_plots) {
 
 #' Plot used to explain the contamination in rep 11.
 if (write_plots) {
-    save_plot(here("plots/sims-and-exps/99-rep11-ontop.pdf"),
+    save_plot(here("plots/03-experiments/exper-rep11-contam-explain.pdf"),
           experiment_plotter("11", TRUE), 3, 3)
 } else {
     experiment_plotter("11", TRUE)

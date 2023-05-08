@@ -18,7 +18,7 @@ Folder contents:
 │   ├── 02-prelim-assays.R
 │   └── 03-stage-structured-table.R
 ├── 03-experiments
-│   ├── 01-exp-sims.R
+│   ├── 01-exper-sims.R
 │   └── 02-experiments.R
 ├── 04-stability
 │   ├── 00-stability-shared.R
@@ -91,7 +91,7 @@ The third group (folder `03-experiments`) relates to the experiments and the
 simulations we did beforehand to develop predictions for them.
 
 
-* `01-exp-sims.R` creates figures 2A, 2B, S2, and S3. These are the simulations
+* `01-exper-sims.R` creates figures 2A, 2B, S2, and S3. These are the simulations
   I did to help understand the system before the experiments.
   They include how dispersal, starting resistance, and later perturbations
   affect the outcomes of the *in silico* experiment.

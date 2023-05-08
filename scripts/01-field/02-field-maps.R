@@ -207,7 +207,7 @@ fields_par_p <- obs_fields_par |>
 
 
 if (write_plots) {
-    save_plot(here("plots/field-data/par-map.pdf"), fields_par_p,
+    save_plot(here("plots/01-field/field-mosaic/par-map.pdf"), fields_par_p,
               w = 3.5, h = 2.5, bg = "transparent")
 } else {
     fields_par_p
@@ -235,7 +235,7 @@ fields_par_p_leg <- function() {
 }
 
 if (write_plots) {
-    save_plot(here("plots/field-data/par-map-legend.pdf"), fields_par_p_leg,
+    save_plot(here("plots/01-field/field-mosaic/par-map-legend.pdf"), fields_par_p_leg,
               w = 2, h = 3.5)
 }
 
@@ -269,10 +269,10 @@ usa_map_p <- ne_countries(country = "united states of america",
     theme_void()
 
 if (write_plots) {
-    save_plot(here("plots/field-data/par-map-usa-inset.pdf"), usa_map_p,
+    save_plot(here("plots/01-field/field-mosaic/par-map-usa-inset.pdf"), usa_map_p,
               w = 2.5, h = 1.5)
     # If you have pdfcrop installed:
-    # system(paste("pdfcrop", here("plots/field-data/par-map-usa-inset.pdf")))
+    # system(paste("pdfcrop", here("plots/01-field/field-mosaic/par-map-usa-inset.pdf")))
 } else {
     usa_map_p
 }
@@ -328,7 +328,7 @@ arl_goog_p <- arl_google |>
 
 
 if (write_plots) {
-     save_plot(here("plots/field-data/par-map-google-inset.pdf"), arl_goog_p,
+     save_plot(here("plots/01-field/field-mosaic/par-map-google-inset.pdf"), arl_goog_p,
                w = 1.5, h = 1.5)
 } else {
     arl_goog_p

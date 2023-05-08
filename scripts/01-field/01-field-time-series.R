@@ -144,7 +144,7 @@ par_ts_p <- par_df |>
 
 
 if (write_plots) {
-    save_plot(here("plots/field-data/par-time.pdf"), par_ts_p,
+    save_plot(here("plots/01-field/field-mosaic/par-time.pdf"), par_ts_p,
               w = 4, h = 2.5)
 } else {
     par_ts_p
@@ -185,7 +185,7 @@ par_ts_wlines_p <- par_df |>
     scale_fill_viridis_d(guide = "none")
 
 if (write_plots) {
-    save_plot(here("plots/par-time-by-field.pdf"), par_ts_wlines_p,
+    save_plot(here("plots/01-field/field-par-time-by-field.pdf"), par_ts_wlines_p,
               w = 6.5, h = 5)
 } else {
     par_ts_wlines_p
@@ -201,7 +201,7 @@ ham_ts_p <- ham_df |>
 
 
 if (write_plots) {
-    save_plot(here("plots/field-data/ham-time.pdf"), ham_ts_p,
+    save_plot(here("plots/01-field/field-mosaic/ham-time.pdf"), ham_ts_p,
               w = 4, h = 2.5, seed = 380247925)
 } else {
     ham_ts_p

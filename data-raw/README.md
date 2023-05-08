@@ -219,8 +219,9 @@ Column descriptions:
 
 ## Files from other sources
 
-Data from Ives et al. (2020) are used in files `scripts/field-data-maps.R` and
-`scripts/field-data-time-series.R`.
+Data from Ives et al. (2020) are used in files 
+`scripts/01-field/01-field-time-series.R` and
+`scripts/01-field/02-field-maps.R`.
 These data are not provided in this repository since they are not ours to share.
 To create the plots that used data from Ives et al. (2020) (fig. 1),
 you should download them from <https://doi.org/10.6084/m9.figshare.11828865.v1>.

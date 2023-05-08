@@ -9,7 +9,7 @@ source("scripts/04-stability/00-stability-shared.R")
 
 
 # File name for figure:
-file_out <- here("plots/trajectories-greater-dispersal.pdf")
+file_out <- here("plots/04-stability/trajectories-greater-dispersal.pdf")
 
 
 

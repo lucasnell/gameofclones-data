@@ -235,7 +235,7 @@ main_p_list <- levels(main_aphids$disp) |>
 
 if (write_plots) {
     for (i in 1:length(main_p_list)) {
-        fn <- paste0(here("plots/sims-and-exps/"),
+        fn <- paste0(here("plots/03-experiments/exper-and-sims/"),
                      sprintf("sims-%i-%s.pdf", i, names(main_p_list)[i]))
         save_plot(fn, main_p_list[[i]], 4, 1.25)
     }; rm(i, fn)
@@ -292,13 +292,16 @@ wasp_wasps <- map_dfr(wasp_sims, ~ .x[["wasps"]]) |>
 wasp_p_list <- map(
     levels(wasp_aphids$wasps0),
     function(w0) {
+        # w0 <- levels(wasp_aphids$wasps0)[1]
+        # rm(w0, aw0, ww0, p, ext)
         aw0 <- wasp_aphids |>
-            filter(wasps0 == w0, time <= 250)
-        ww0 <- wasp_wasps |>
-            filter(wasps0 == w0, time <= 250)
-        aw0 |>
+            filter(wasps0 == w0) |>
             mutate(N = ifelse(N == 0, NA, N),
-                   N = log(N)) |>
+                   N = log(N))
+        ww0 <- wasp_wasps |>
+            filter(wasps0 == w0)
+        p <- aw0 |>
+            filter(!is.na(N)) |>
             ggplot(aes(time, N)) +
             ggtitle(w0) +
             geom_hline(yintercept = 0, color = "gray70") +
@@ -318,13 +321,24 @@ wasp_p_list <- map(
             theme(strip.text = element_text(size = 10),
                   plot.title = element_text(size = 12, hjust = 0.5)) +
             coord_cartesian(clip = FALSE, ylim = c(0, max_N))
+        if (any(is.na(aw0$N))) {
+            ext <- filter(aw0, is.na(N)) |>
+                group_by(field) |>
+                filter(time == min(time)) |>
+                ungroup() |>
+                mutate(N = 0)
+            p <- p +
+                geom_point(data = ext, aes(color = line), shape = 4, size = 2) +
+                theme(legend.position = "none")
+        }
+        return(p)
     })
 
 
 wasp_p_list[[1]] <- wasp_p_list[[1]] +
     geom_text(data = tibble(field = factor(para_lvls[2], levels = para_lvls),
-                            time = 150, N = log(5)),
-              aes(label = "wasps"), size = 9 / 2.8, hjust = 1, vjust = 0.5,
+                            time = 300, N = log(5)),
+              aes(label = "wasps"), size = 9 / 2.8, hjust = 0, vjust = 0.5,
               color = "gray30")
 
 
@@ -335,8 +349,9 @@ wasp_p <- wrap_plots(wasp_p_list, ncol = 2, guides = "collect") +
 
 
 if (write_plots) {
-    save_plot("plots/sims-wasp.pdf", wasp_p, 10, 5)
+    save_plot("plots/03-experiments/sims-exper-wasps-t0.pdf", wasp_p, 10, 5)
 } else wasp_p
+
 
 
 
@@ -468,7 +483,7 @@ stable_start_p <- wrap_plots(stable_start_p_list, ncol = 2, guides = "collect") 
     theme(plot.tag = element_text(size = 14, face = "bold"))
 
 if (write_plots) {
-    save_plot("plots/sims-stable-start.pdf", stable_start_p, 10, 5)
+    save_plot("plots/03-experiments/sims-exper-resist-t0.pdf", stable_start_p, 10, 5)
 } else stable_start_p
 
 
@@ -596,7 +611,7 @@ stable_perturb_p <- wrap_plots(stable_perturb_p_list, ncol = 2, guides = "collec
     theme(plot.tag = element_text(size = 14, face = "bold"))
 
 if (write_plots) {
-    save_plot("plots/sims-stable-perturb.pdf",
+    save_plot("plots/03-experiments/sims-exper-perturbs.pdf",
               stable_perturb_p, 10, 5)
 } else stable_perturb_p
 

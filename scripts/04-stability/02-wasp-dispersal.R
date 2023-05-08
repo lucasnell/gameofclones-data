@@ -13,7 +13,7 @@ source("scripts/04-stability/00-stability-shared.R")
 
 
 # Directory where plots produced here will be added:
-plot_dir_out <- here("plots/stable-sims")
+plot_dir_out <- here("plots/04-stability/stable-sims")
 if (!dir.exists(plot_dir_out) && write_plots) {
     dir.create(plot_dir_out, recursive = TRUE)
 }

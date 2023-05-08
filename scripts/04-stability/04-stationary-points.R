@@ -12,7 +12,7 @@ library(plot3D)
 
 
 # File name for figure:
-file_out <- here("plots/stationary-points.pdf")
+file_out <- here("plots/04-stability/stationary-points.pdf")
 
 
 

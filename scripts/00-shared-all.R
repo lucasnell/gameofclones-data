@@ -23,8 +23,8 @@ suppressPackageStartupMessages({
 
 #' The only other packages I used in any scripts are...
 #'
-#' `plot3D` (`figS8.R`)
-#' `sf`, `ggmap`, `rnaturalearth`, and `rnaturalearthdata` (`field-data-maps.R`)
+#' `plot3D` (`04-stability/04-stationary-points.R`)
+#' `sf`, `ggmap`, `rnaturalearth`, and `rnaturalearthdata` (`01-field/02-field-maps.R`)
 #'
 #' See `README.md` in the parent directory for installing them all.
 #'

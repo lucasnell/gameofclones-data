@@ -101,8 +101,9 @@ remotes::install_github("lucasnell/gameofclones")
 
 # Data from other sources
 
-Data from Ives et al. (2020) are used in files `scripts/field-data-maps.R` and
-`scripts/field-data-time-series.R`.
+Data from Ives et al. (2020) are used in files 
+`scripts/01-field/01-field-time-series.R` and
+`scripts/01-field/02-field-maps.R`.
 These data are not provided in this repository since they're not ours to share.
 To run these scripts and create plots of field data,
 you should download these additional data from

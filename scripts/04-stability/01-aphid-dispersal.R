@@ -13,7 +13,7 @@ source("scripts/04-stability/00-stability-shared.R")
 
 
 # Directory where plots produced here will be added:
-plot_dir_out <- here("plots/stable-sims")
+plot_dir_out <- here("plots/04-stability/stable-sims")
 if (!dir.exists(plot_dir_out) && write_plots) {
     dir.create(plot_dir_out, recursive = TRUE)
 }
@@ -397,7 +397,7 @@ ss_aphid_d_highr_p <- ss_aphid_d_highr[["aphids"]] |>
 
 
 if (write_plots) {
-    save_plot("plots/aphid-dispersal-high-resist.pdf", ss_aphid_d_highr_p, 6, 3)
+    save_plot("plots/04-stability/aphid-dispersal-high-resist.pdf", ss_aphid_d_highr_p, 6, 3)
 } else ss_aphid_d_highr_p
 
 
