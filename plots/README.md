@@ -5,7 +5,7 @@ Folder contents:
 
 ```
 .
-├── aphid-dispersal-low-resist.pdf
+├── aphid-dispersal-high-resist.pdf
 ├── assays-competition.pdf
 ├── assays-wasps.pdf
 ├── field-data

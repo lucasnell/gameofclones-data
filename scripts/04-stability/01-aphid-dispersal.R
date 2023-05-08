@@ -315,3 +315,89 @@ if (write_plots) {
 }
 
 
+
+
+
+
+# ============================================================================*
+# Figure showing what happens when we start with many resistant aphids ----
+# This was written by LAN.
+# ============================================================================*
+
+
+# Make resistant aphids start at 99% of total population
+line_s2 <- line_s
+line_r2 <- line_r
+# (all experimental simulations started with 64 total aphids)
+line_s2$density_0[,1] <- line_s2$density_0[,1] |>
+    (\(x){
+        x / sum(x) * 64 * 0.01
+    })()
+line_r2$density_0[,1] <- line_r2$density_0[,1] |>
+    (\(x){
+        x / sum(x) * 64 * 0.99
+    })()
+
+ss_aphid_d_highr <- sim_experiments(clonal_lines = c(line_s2, line_r2),
+                                   alate_field_disp_p = 0.1,
+                                   extinct_N = 1e-5,
+                                   max_t = max_t, save_every = 1)
+para_lvls <- paste(c("no parasitism", "parasitism"), "patch")
+
+ss_aphid_d_highr[["wasps"]] <- ss_aphid_d_highr[["wasps"]] |>
+    select(-rep) |>
+    mutate(field = factor(field, levels = 2:1,
+                          labels = para_lvls))
+
+ss_aphid_d_highr[["aphids"]] <- ss_aphid_d_highr[["aphids"]] |>
+    mutate(field = factor(field, levels = 2:1,
+                          labels = para_lvls),
+           line = factor(line, levels = c("resistant", "susceptible"))) |>
+    filter(type != "mummy") |>
+    group_by(field, time, line) |>
+    summarize(N = sum(N), .groups = "drop") |>
+    mutate(N = ifelse(N == 0, NA, N),
+           N = log(N))
+
+
+wasp_mod <- 5.078307  # <-- should be max(disp_wasps$wasps) / max(log1p(disp_aphids$N))
+max_N <- 7.785  # <-- should be ceiling(max(log(disp_aphids$N)) * 1e3) / 1e3
+y_breaks <- log(10^(0:3))
+y_labs <- 10^(0:3)
+
+ss_aphid_d_highr_p <- ss_aphid_d_highr[["aphids"]] |>
+    filter(time <= 1000) |>
+    ggplot(aes(time, N)) +
+    geom_area(data = ss_aphid_d_highr[["wasps"]] |>
+                  mutate(N = wasps / wasp_mod) |>
+                  filter(time <= 1000),
+              fill = wasp_fill, color = NA) +
+    geom_hline(yintercept = 0, color = "gray70") +
+    geom_line(aes(color = line))+
+    geom_text(data = tibble(field = factor(para_lvls[2], levels = para_lvls),
+                            time = 650, N = log(10)),
+              aes(label = "wasps"), size = 9 / 2.8,
+              hjust = 0.5, vjust = 0.5, color = col_pal$w) +
+    geom_text(data = ss_aphid_d_highr[["aphids"]] |>
+                  filter(time == 500, field == "no parasitism patch"),
+              aes(label = line, color = line), size = 9 / 2.8,
+              hjust = 0, vjust = 1, nudge_x = 50, nudge_y = -0.2) +
+    scale_color_manual(values = clone_pal, guide = "none") +
+    scale_y_continuous("Aphid abundance",
+                       breaks = y_breaks,
+                       labels = y_labs,
+                       # limits = c(0)
+                       sec.axis = sec_axis(~ . * wasp_mod,
+                                           "Wasp abundance",
+                                           breaks = 0:2 * 20)) +
+    scale_x_continuous("Days") +
+    facet_grid( ~ field, scales = "fixed") +
+    theme(strip.text = element_text(size = 10)) +
+    coord_cartesian(ylim = c(-0.1, NA))
+
+
+if (write_plots) {
+    save_plot("plots/aphid-dispersal-high-resist.pdf", ss_aphid_d_highr_p, 6, 3)
+} else ss_aphid_d_highr_p
+
+
