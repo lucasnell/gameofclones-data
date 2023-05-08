@@ -375,12 +375,12 @@ if (write_plots) {
 # For equilibrium proportion resistance ~ wasp dispersal
 
 ss_wasp_d_resist <- function() {
-    par(mai=c(0.1, 0.5, 0.5, 0.1))
+    par(mai=c(0.5, 0.5, 0.1, 0.1))
 
-    plot(peak.prop1 ~ wasp.disp, data = w, typ="l", ylim = c(0,1), xaxt = "n",
+    plot(peak.prop1 ~ wasp.disp, data = w, typ="l", ylim = c(0,1), # xaxt = "n",
          ylab = "", xlab = "")
          # ylab = "Proportion resistant", xlab = "Wasp dispersal")
-    axis(3)
+    # axis(3)
 
     conf_bounds(x = w$wasp.disp[!is.na(w$upper)],
                 y.lower = w$upper[!is.na(w$upper)],

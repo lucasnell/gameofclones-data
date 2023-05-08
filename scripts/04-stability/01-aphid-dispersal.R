@@ -279,12 +279,13 @@ ss_aphid_d_resist <- function() {
     # Threshold to manually prevent crossing over of lines at bifurcation
     cot <- 0.2582
 
-    par(mai=c(0.1, 0.5, 0.5, 0.1))
+    par(mai=c(0.5, 0.5, 0.1, 0.1))
 
     plot(stable.equil1 ~ disp, data = www[www$disp < cot,], typ="l",
-         xlim = c(0,.28), ylim = c(0,1), xaxt = "n", ylab = "", xlab = "")
+         xlim = c(0,.28), ylim = c(0,1), # xaxt = "n",
+         ylab = "", xlab = "")
          # ylab = "Proportion resistant", xlab = "Aphid dispersal")
-    axis(3)
+    # axis(3)
 
     conf_bounds(x = ww$disp, y.lower = ww$upper, y.upper = rep(1,nrow(ww)),
                 col="lightgray")

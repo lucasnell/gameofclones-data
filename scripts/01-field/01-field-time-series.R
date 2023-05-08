@@ -150,22 +150,7 @@ if (write_plots) {
     par_ts_p
 }
 
-par_ts_p_leg <- function() {
-    legend <- (par_ts_p + theme(legend.position = "right")) |>
-        (function(a.gplot){
-            tmp <- ggplot_gtable(ggplot_build(a.gplot))
-            leg <- which(sapply(tmp$grobs, function(x) x$name) == "guide-box")
-            legend <- tmp$grobs[[leg]]
-            legend
-        })()
-    grid.newpage()
-    grid.draw(legend)
-}
 
-if (write_plots) {
-    save_plot(here("plots/field-data/par-time-legend.pdf"), par_ts_p_leg,
-              w = 2, h = 2.5)
-}
 
 
 #' Same thing but without coloring by fitness and with lines connecting fields.
