@@ -4,6 +4,34 @@
 This folder contains the R scripts containing all the analyses and generating
 all the figures in the manuscript.
 
+Folder contents: 
+
+```
+.
+├── 00-shared-all.R
+├── 01-field
+│   ├── 00-field-shared.R
+│   ├── 01-field-time-series.R
+│   └── 02-field-maps.R
+├── 02-prelims
+│   ├── 01-alate-production.R
+│   ├── 02-prelim-assays.R
+│   └── 03-stage-structured-table.R
+├── 03-experiments
+│   ├── 01-exp-sims.R
+│   └── 02-experiments.R
+├── 04-stability
+│   ├── 00-stability-shared.R
+│   ├── 01-aphid-dispersal.R
+│   ├── 02-wasp-dispersal.R
+│   ├── 03-trajectories-experiments.R
+│   ├── 04-stationary-points.R
+│   ├── 05-trajectories-field-high-d.R
+│   └── 06-trajectories-field.R
+└── README.md
+```
+
+
 To run this code, first read the top-level `README.md` for `gameofclones-data`,
 in which it will show you what R packages are required.
 Next, check out file `scripts/00-shared-all.R` to set the objects `write_plots`

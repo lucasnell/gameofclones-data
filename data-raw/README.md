@@ -1,7 +1,28 @@
 # `data-raw` directory
 
 This directory contains the raw data from the experiments and some preliminary
-assays. File descriptions are below.
+assays. 
+
+Folder contents:
+
+```
+.
+├── Arlington.geojson
+├── README.md
+├── alate-counts.csv
+├── assays-population_growth.csv
+├── assays-wasp_resistance_choice.csv
+├── assays-wasp_resistance_no_choice.csv
+├── experiments-main.csv
+├── experiments-pesky_wasps.csv
+├── parasitism-2017.csv
+├── parasitism-2018.csv
+├── parasitism-2019.csv
+└── symbionts-2018-2019.csv
+```
+
+
+Individual file descriptions are below.
 
 
 ## `alate-counts.csv`

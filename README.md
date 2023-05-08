@@ -14,19 +14,36 @@ written by ARI.
 
 # Organization
 
+Folder contents:
+
+```
+.
+├── data-interm
+├── data-raw
+├── gameofclones-data.Rproj
+├── LICENSE.md
+├── plots
+├── README.md
+├── renv
+├── renv.lock
+└── scripts
+```
+
 The following folders should be present:
 
 * `data-interm`: intermediate files with output from time-consuming simulations
 * `data-raw`: raw data from the field, experiments, and preliminary assays
+* `gameofclones-data.Rproj`: file saving this RStudio Project's preferences
 * `LICENSE.md`: file containing the CC0 license for this repository
 * `plots`: all the primary plots in the manuscript
+* `README.md`: this file
 * `renv`: files necessary to (optionally) use the R package `renv` to install
   the same R packages with the same versions we used.
 * `renv.lock`: another file necessary for using `renv`
 * `scripts`: the R scripts containing all the analyses and generating
   all the figures in the manuscript
 
-The folders `data-interm`, `data-raw`, and `scripts` have separate
+The folders `data-interm`, `data-raw`, `plots`, and `scripts` have separate
 `README.md` files that have more information on each.
 
 
