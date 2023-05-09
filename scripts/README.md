@@ -127,7 +127,7 @@ These were written by Anthony R. Ives.
   lab experiment.'
 
 * `05-trajectories-field.R` creates figure S14:
-  'For the model parameterized for the field data (fig. 3C,D), time
+  'For the model parameterized for the field data (fig. 3B), time
   trajectories of susceptible aphid clones (yellow), resistant clones (green),
   and parasitoids (purple).'
 
