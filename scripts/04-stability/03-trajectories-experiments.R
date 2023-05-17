@@ -71,7 +71,7 @@ clone_plot <- function(sim, delta.list, labels = "", max_t = 1e3,
     lines(prop ~ time, data=d[d$delta == 1 & d$field == 2,])
 
     plot(wasps ~ time, data=d[d$delta == 1 & d$field == 1,], typ="l",
-         ylim = c(0, max(d$wasps)), ylab = "Wasps (field 1)", xlab = "Time")
+         ylim = c(0, max(d$wasps)), ylab = "Parasitoids (field 1)", xlab = "Time")
     grid.text("C", x = unit(0, "npc"), y = unit(0.33, "npc"),
               just = c("left", "top"),
               gp = gpar(fontsize = 18, fontface = "bold"))

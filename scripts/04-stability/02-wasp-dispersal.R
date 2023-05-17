@@ -1,6 +1,6 @@
 
 #'
-#' This file makes figures related to how wasp dispersal
+#' This file makes figures related to how parasitoid wasp dispersal
 #' changes the stability and equilibrium states of the system using simulations
 #' that match the field.
 #' See `scripts/README.md` for the figure number(s).
@@ -316,7 +316,7 @@ ss_wasp_d_abund <- function() {
     par(mai=c(0.9, 0.9, 0.1, 0.1))
 
     plot(peak.resistant1 ~ wasp.disp, data = w, typ="l", ylab = "Abundance",
-         xlab = "Wasp dispersal", col=col_pal$r, lty = 2,
+         xlab = "Parasitoid dispersal", col=col_pal$r, lty = 2,
          ylim = c(-4,4), yaxt = "n")
     aty <- axTicks(2)
     y_labels <- sapply(aty,function(i) as.expression(bquote(10^ .(i))))

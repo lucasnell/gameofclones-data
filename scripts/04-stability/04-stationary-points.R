@@ -58,7 +58,7 @@ stat_points_p <- function() {
     dd <- d[d$delta == delta.list[1],]
     lines3D(dd$resistant, dd$susceptible, dd$wasps, colvar = dd$wasps,
             colkey = FALSE, theta = 0, phi = 0, xlab = "Resistant",
-            ylab = "Susceptible", zlab = "Wasps")
+            ylab = "Susceptible", zlab = "Parasitoids")
     mtext("A", side = 3, adj = 0, font = 2, cex = 1.5, line = 2)
     for(i.delta in delta.list[2:length(delta.list)]) {
         dd <- d[d$delta == i.delta,]

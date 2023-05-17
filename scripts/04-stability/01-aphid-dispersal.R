@@ -20,7 +20,9 @@ if (!dir.exists(plot_dir_out) && write_plots) {
 }
 # Names of files produced here:
 plots_out <- list(N = paste0(plot_dir_out, "/stable-sims-aphid_d-abundance.pdf"),
-                  P = paste0(plot_dir_out, "/stable-sims-aphid_d-resistance.pdf"))
+                  P = paste0(plot_dir_out, "/stable-sims-aphid_d-resistance.pdf"),
+                  high_resist = here("plots/04-stability",
+                                     "aphid-dispersal-high-resist.pdf"))
 # Name of temporary results file produced here:
 tmp_results <- here("data-interm/stable-sims-aphid_d.csv")
 
@@ -377,7 +379,7 @@ ss_aphid_d_highr_p <- ss_aphid_d_highr[["aphids"]] |>
     geom_line(aes(color = line))+
     geom_text(data = tibble(field = factor(para_lvls[2], levels = para_lvls),
                             time = 650, N = log(10)),
-              aes(label = "wasps"), size = 9 / 2.8,
+              aes(label = "parasitoids"), size = 9 / 2.8,
               hjust = 0.5, vjust = 0.5, color = col_pal$w) +
     geom_text(data = ss_aphid_d_highr[["aphids"]] |>
                   filter(time == 500, field == "no parasitism patch"),
@@ -389,7 +391,7 @@ ss_aphid_d_highr_p <- ss_aphid_d_highr[["aphids"]] |>
                        labels = y_labs,
                        # limits = c(0)
                        sec.axis = sec_axis(~ . * wasp_mod,
-                                           "Wasp abundance",
+                                           "Parasitoid abundance",
                                            breaks = 0:2 * 20)) +
     scale_x_continuous("Days") +
     facet_grid( ~ field, scales = "fixed") +
@@ -398,7 +400,7 @@ ss_aphid_d_highr_p <- ss_aphid_d_highr[["aphids"]] |>
 
 
 if (write_plots) {
-    save_plot("plots/04-stability/aphid-dispersal-high-resist.pdf", ss_aphid_d_highr_p, 6, 3)
+    save_plot(plots_out$high_resist, ss_aphid_d_highr_p, 6, 3)
 } else ss_aphid_d_highr_p
 
 

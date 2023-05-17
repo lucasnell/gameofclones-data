@@ -214,7 +214,7 @@ main_p_list <- levels(main_aphids$disp) |>
                                breaks = y_breaks,
                                labels = y_labs,
                                sec.axis = sec_axis(~ . * wasp_mod,
-                                                   "Wasp abundance",
+                                                   "Parasitoid abundance",
                                                    breaks = 0:2 * 20)) +
             scale_x_continuous("Days", limits = c(0, 250),
                                breaks = 0:5 * 50) +
@@ -248,7 +248,7 @@ if (write_plots) {
 # ============================================================================*
 # ============================================================================*
 
-# Starting wasp abundance ----
+# Starting parasitoid abundance ----
 
 # ============================================================================*
 # ============================================================================*
@@ -279,13 +279,13 @@ wasp_sims <- safe_mclapply(c(1, 2, 3, 10), do_wasp_sims)
 
 
 wasp_aphids <- map_dfr(wasp_sims, ~ group_aphids(.x[["aphids"]], "living")) |>
-    mutate(wasps0 = factor(wasps0, labels = sprintf("starting wasp(s) = %i",
+    mutate(wasps0 = factor(wasps0, labels = sprintf("starting parasitoid(s) = %i",
                                                       sort(unique(wasps0)))))
 wasp_mummies <- map_dfr(wasp_sims, ~ group_aphids(.x[["aphids"]], "mummies")) |>
-    mutate(wasps0 = factor(wasps0, labels = sprintf("starting wasp(s) = %i",
+    mutate(wasps0 = factor(wasps0, labels = sprintf("starting parasitoid(s) = %i",
                                                       sort(unique(wasps0)))))
 wasp_wasps <- map_dfr(wasp_sims, ~ .x[["wasps"]]) |>
-    mutate(wasps0 = factor(wasps0, labels = sprintf("starting wasp(s) = %i",
+    mutate(wasps0 = factor(wasps0, labels = sprintf("starting parasitoid(s) = %i",
                                                       sort(unique(wasps0)))))
 
 
@@ -314,7 +314,7 @@ wasp_p_list <- map(
                                breaks = y_breaks,
                                labels = y_labs,
                                sec.axis = sec_axis(~ . * wasp_mod,
-                                                   "Wasp abundance",
+                                                   "Parasitoid abundance",
                                                    breaks = 0:2 * 20)) +
             scale_x_continuous("Days") +
             facet_wrap( ~ field, nrow = 1) +
@@ -331,15 +331,15 @@ wasp_p_list <- map(
                 geom_point(data = ext, aes(color = line), shape = 4, size = 2) +
                 theme(legend.position = "none")
         }
+        if (w0 == levels(wasp_aphids$wasps0)[1]) {
+            p <- p +
+                geom_text(data = tibble(field = factor(para_lvls[2], levels = para_lvls),
+                                        time = 200, N = log(20)),
+                          aes(label = "parasitoids"), size = 9 / 2.8, hjust = 0, vjust = 0.5,
+                          color = "gray30")
+        }
         return(p)
     })
-
-
-wasp_p_list[[1]] <- wasp_p_list[[1]] +
-    geom_text(data = tibble(field = factor(para_lvls[2], levels = para_lvls),
-                            time = 300, N = log(5)),
-              aes(label = "wasps"), size = 9 / 2.8, hjust = 0, vjust = 0.5,
-              color = "gray30")
 
 
 
@@ -448,7 +448,7 @@ stable_start_p_list <- map(
                                breaks = y_breaks,
                                labels = y_labs,
                                sec.axis = sec_axis(~ . * wasp_mod,
-                                                   "Wasp abundance",
+                                                   "Parasitoid abundance",
                                                    breaks = 0:2 * 20)) +
             scale_x_continuous("Days") +
             facet_wrap(~ field, nrow = 1) +
@@ -470,7 +470,7 @@ stable_start_p_list <- map(
             lab_d <- tibble(field = factor(para_lvls[2], levels = para_lvls),
                          time = 450, N = log(9))
             p <- p +
-                geom_text(data = lab_d, aes(label = "wasps"), size = 9 / 2.8,
+                geom_text(data = lab_d, aes(label = "parasitoids"), size = 9 / 2.8,
                           hjust = 1, vjust = 0.5, color = col_pal$w)
         }
         return(p)
@@ -541,7 +541,7 @@ stable_perturb_aphids <- map_dfr(stable_perturb_sims,
     mutate(who = factor(who, levels = c("resistant", "susceptible",
                                         "wasps", "mummies"),
                         labels = c("resistant aphids", "susceptible aphids",
-                                   "adult wasps",
+                                   "adult parasitoids",
                                    "mummies & parasitized aphids"))) |>
     filter(time >= pert_t_range[1], time <= pert_t_range[2])
 stable_perturb_mummies <- map_dfr(stable_perturb_sims,
@@ -549,14 +549,14 @@ stable_perturb_mummies <- map_dfr(stable_perturb_sims,
     mutate(who = factor(who, levels = c("resistant", "susceptible",
                                         "wasps", "mummies"),
                         labels = c("resistant aphids", "susceptible aphids",
-                                   "adult wasps",
+                                   "adult parasitoids",
                                    "mummies & parasitized aphids"))) |>
     filter(time >= pert_t_range[1], time <= pert_t_range[2])
 stable_perturb_wasps <- map_dfr(stable_perturb_sims, ~ .x[["wasps"]]) |>
     mutate(who = factor(who, levels = c("resistant", "susceptible",
                                         "wasps", "mummies"),
                         labels = c("resistant aphids", "susceptible aphids",
-                                   "adult wasps",
+                                   "adult parasitoids",
                                    "mummies & parasitized aphids"))) |>
     filter(time >= pert_t_range[1], time <= pert_t_range[2])
 
@@ -586,7 +586,7 @@ stable_perturb_p_list <- map(
                                breaks = y_breaks,
                                labels = y_labs,
                                sec.axis = sec_axis(~ . * wasp_mod,
-                                                   "Wasp abundance",
+                                                   "Parasitoid abundance",
                                                    breaks = 0:2 * 20)) +
             scale_x_continuous("Days") +
             facet_wrap(~ field, nrow = 1) +
@@ -595,9 +595,9 @@ stable_perturb_p_list <- map(
             coord_cartesian(clip = FALSE, ylim = c(0, max_N))
         if (w == levels(stable_perturb_aphids$who)[1]) {
             lab_d <- tibble(field = factor(para_lvls[2], levels = para_lvls),
-                            time = 10200, N = log(3.5))
+                            time = 10.1e3, N = log(4))
             p <- p +
-                geom_text(data = lab_d, aes(label = "wasps"), size = 9 / 2.8,
+                geom_text(data = lab_d, aes(label = "parasitoids"), size = 9 / 2.8,
                           hjust = 0, vjust = 0.5, color = col_pal$w)
         }
         return(p)
