@@ -132,7 +132,7 @@ aphid_cage_df <- exp_df |>
 alate_cage_df <- exp_df |>
     mutate(n_replaced = replaced_plants |>
                str_split(",") |>
-               map_int(length)) |>
+               map_int(~ length(.x[.x != "" & !is.na(.x)]))) |>
     select(treatment, rep, cage, days,
            starts_with("alates_"), n_replaced) |>
     pivot_longer(starts_with("alates_total_"), names_to = "line",
@@ -145,6 +145,9 @@ alate_cage_df <- exp_df |>
            cage = fct_recode(cage, !!!cage_lvls)) |>
     select(treatment, rep, cage, days, line,
            alates_total, alates_in, n_replaced)
+
+
+
 
 
 # ============================================================================*
@@ -214,8 +217,9 @@ experiment_plotter <- function(r, ontop = FALSE, show_terminations = TRUE) {
                        linewidth = 0.5, linetype = "22", color = "gray60")
     }
     p <- p +
-        geom_area(data = wcd, fill = wasp_fill, color = NA) +
+        # geom_area(data = wcd, fill = wasp_fill, color = NA) +
         geom_hline(yintercept = 0, color = "gray70") +
+        geom_line(data = wcd, color = wasp_color) +
         # Main abundance lines:
         geom_line() +
         scale_color_manual(values = clone_pal, guide = "none") +

@@ -52,6 +52,8 @@ col_pal <- list(r = viridis(100)[50],
 clone_pal <- c(col_pal$r, col_pal$s)
 # Reduce opacity for parasitoid fill:
 wasp_fill <- alpha(col_pal$w, 0.6)
+# Add color for lines if needed:
+wasp_color <- col_pal$w
 
 
 #' Run mclapply on unix system, run lapply on anything else.

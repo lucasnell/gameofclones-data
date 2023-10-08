@@ -201,9 +201,12 @@ main_p_list <- levels(main_aphids$disp) |>
             mutate(N = ifelse(N == 0, NA, N),
                    N = log(N)) |>
             ggplot(aes(time, N)) +
-            geom_area(data = wad |>
+            geom_line(data = wad |>
                           mutate(N = wasps / wasp_mod),
-                      fill = wasp_fill, color = NA) +
+                      color = wasp_color) +
+            # geom_area(data = wad |>
+            #               mutate(N = wasps / wasp_mod),
+            #           fill = wasp_fill, color = NA) +
             geom_hline(yintercept = 0, color = "gray70") +
             geom_line(aes(color = line)) +
             scale_color_manual(values = clone_pal, guide = "none") +
@@ -237,6 +240,8 @@ if (write_plots) {
         save_plot(fn, main_p_list[[i]], 4, 1.25)
     }; rm(i, fn)
 } else wrap_plots(main_p_list, nrow = 1)
+
+
 
 
 
@@ -302,9 +307,12 @@ wasp_p_list <- map(
             ggplot(aes(time, N)) +
             ggtitle(w0) +
             geom_hline(yintercept = 0, color = "gray70") +
-            geom_area(data = ww0 |>
+            geom_line(data = ww0 |>
                           mutate(N = wasps / wasp_mod),
-                      fill = wasp_fill, color = NA) +
+                      color = wasp_color) +
+            # geom_area(data = ww0 |>
+            #               mutate(N = wasps / wasp_mod),
+            #           fill = wasp_fill, color = NA) +
             geom_line(aes(color = line)) +
             scale_color_manual(NULL, values = clone_pal) +
             scale_y_continuous("Aphid abundance",
@@ -331,9 +339,9 @@ wasp_p_list <- map(
         if (w0 == levels(wasp_aphids$wasps0)[1]) {
             p <- p +
                 geom_text(data = tibble(field = factor(para_lvls[2], levels = para_lvls),
-                                        time = 200, N = log(20)),
-                          aes(label = "parasitoids"), size = 9 / 2.8, hjust = 0, vjust = 0.5,
-                          color = "gray30")
+                                        time = 500, N = log(50)),
+                          aes(label = "parasitoids"), size = 9 / 2.8, hjust = 1, vjust = 0.5,
+                          color = col_pal$w)
         }
         return(p)
     })
@@ -436,9 +444,12 @@ stable_start_p_list <- map(
             ggplot(aes(time, N)) +
             ggtitle(pr) +
             geom_hline(yintercept = 0, color = "gray70") +
-            geom_area(data = ssw |>
+            geom_line(data = ssw |>
                           mutate(N = wasps / wasp_mod),
-                      fill = wasp_fill, color = NA) +
+                      color = wasp_color) +
+            # geom_area(data = ssw |>
+            #               mutate(N = wasps / wasp_mod),
+            #           fill = wasp_fill, color = NA) +
             geom_line(aes(color = line)) +
             scale_color_manual(NULL, values = clone_pal) +
             scale_y_continuous("Aphid abundance",
@@ -465,10 +476,10 @@ stable_start_p_list <- map(
         }
         if (pr == levels(stable_start_aphids$p_res)[1]) {
             lab_d <- tibble(field = factor(para_lvls[2], levels = para_lvls),
-                         time = 450, N = log(9))
+                         time = 500, N = log(70))
             p <- p +
                 geom_text(data = lab_d, aes(label = "parasitoids"), size = 9 / 2.8,
-                          hjust = 1, vjust = 0.5, color = col_pal$w)
+                          hjust = 1, vjust = 1, color = col_pal$w)
         }
         return(p)
     })
@@ -574,9 +585,12 @@ stable_perturb_p_list <- map(
             ggplot(aes(time, N)) +
             ggtitle(w) +
             geom_hline(yintercept = 0, color = "gray70") +
-            geom_area(data = ssw |>
+            geom_line(data = ssw |>
                           mutate(N = wasps / wasp_mod),
-                      fill = wasp_fill, color = NA) +
+                      color = wasp_color) +
+            # geom_area(data = ssw |>
+            #               mutate(N = wasps / wasp_mod),
+            #           fill = wasp_fill, color = NA) +
             geom_line(aes(color = line)) +
             scale_color_manual(NULL, values = clone_pal) +
             scale_y_continuous("Aphid abundance",
@@ -595,7 +609,7 @@ stable_perturb_p_list <- map(
                             time = 10.1e3, N = log(4))
             p <- p +
                 geom_text(data = lab_d, aes(label = "parasitoids"), size = 9 / 2.8,
-                          hjust = 0, vjust = 0.5, color = col_pal$w)
+                          hjust = 0, vjust = 0, color = col_pal$w)
         }
         return(p)
     })
