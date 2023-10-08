@@ -15,10 +15,8 @@ Folder contents:
 ├── assays-wasp_resistance_no_choice.csv
 ├── experiments-main.csv
 ├── experiments-pesky_wasps.csv
-├── parasitism-2017.csv
-├── parasitism-2018.csv
-├── parasitism-2019.csv
-└── symbionts-2018-2019.csv
+├── hamiltonella-2012-2019.csv
+└── parasitism-2011-2019.csv
 ```
 
 
@@ -181,28 +179,28 @@ Column descriptions:
 
 
 
-## `parasitism-2017.csv`, `parasitism-2018.csv`, and `parasitism-2019.csv`
+## `parasitism-2011-2019.csv`
 
 These are raw data on parasitism from field surveys.
 
 Column descriptions:
 
-* `Field`: Field where sampling was done
-* `Date`: date when sampling occurred
-* `Initials`: initials of observer
+* `Year`: year of sampling date
+* `Month`: month of sampling date
+* `Day`: day of month of sampling date
+* `Field`: field where sampling was done
+* `Height_In`: height of alfalfa in inches
 * `Cycle`: harvest cycle when sampling occurred
-* `DISS_Initials`: initials of dissection sampler
-* `DISS_G_Unpara`: green unparasitized aphids
-* `DISS_G_Para`: green aphids parasitized (no fungus)
-* `DISS_G_fungus`: green aphids with fungus (unparasitized)
-* `DISS_G_p+f`:  green aphids parasitized with fungus
-* `DISS_R_Unpara`: red unparasitized aphids
-* `DISS_R_Para`: red aphids parasitized (no fungus)
-* `DISS_R_Fungus`: red aphids with fungus (unparasitized)
-* `DISS_R_p+f`: red aphids parasitized with fungus
+* `GrUnpara`: green unparasitized aphids
+* `GrPara`: green parasitized aphids
+* `RedUnpara`: red unparasitized aphids
+* `RedPara`: red parasitized aphids
+* `SweepCount`: number of sweeps used to collect pea aphids
+* `SweepsPeaAphids`: number of pea aphids counted from sweeps
 
 
-## `symbionts-2018-2019.csv`
+
+## `hamiltonella-2012-2019.csv`
 
 These are raw data on *Hamiltonella defensa* infection from field surveys.
 
@@ -215,19 +213,4 @@ Column descriptions:
 * `clone`: clone name (often new) sampled
 * `ham`: 1 or 0 for whether this clone was infected with *H. defensa*
 
-
-
-## Files from other sources
-
-Data from Ives et al. (2020) are used in files 
-`scripts/01-field/01-field-time-series.R` and
-`scripts/01-field/02-field-maps.R`.
-These data are not provided in this repository since they are not ours to share.
-To create the plots that used data from Ives et al. (2020) (fig. 1),
-you should download them from <https://doi.org/10.6084/m9.figshare.11828865.v1>.
-Then rename
-`Ives et al. 2020 Data Fig2_1.csv` to `parasitism-2001-2016.csv`
-and
-`Ives et al. 2020 Data Fig3A.csv` to `symbionts-2012-2017.csv`
-Lastly, put both inside the `data-raw` folder.
 

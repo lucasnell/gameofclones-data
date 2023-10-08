@@ -11,14 +11,6 @@ maps_dates <- as.Date(c("2015-06-03", "2015-06-12", "2015-06-19",
                         "2013-08-01", "2013-08-09", "2013-08-19"))
 
 
-# # Color palettes to use in plots (using binned rr_rs values):
-# rr_rs_pal <- with(list(pal = inferno, inds = c(80, 60, 20)),
-#                   list(color = c(pal(100)[inds], "gray40"),
-#                        fill = c(pal(100)[inds], "white"),
-#                        fill2 = c(pal(100, alpha = 0.5)[inds], "white")))
-
-
-
 #' Calculating parasitism at which relative fitness for resistant aphids is 1.
 #' This is based on internal data from `gameofclones` that were derived from
 #' Ives et al. (2020).
@@ -33,68 +25,38 @@ par_rrrs0 <- with(list(
          gameofclones:::rr_rs_lookup$pr)[idx])
 
 
-par_df <- list(
-    here("data-raw/parasitism-2001-2016.csv") |>
-        read_csv(col_types = cols()) |>
-        select(field, Cycle, DateFormat, year, day, para, paraN) |>
-        rename(cycle = Cycle, para_n = paraN, date = DateFormat) |>
-        mutate(field = paste(field),
-               # Field 18 is the same as field 110; the numbers weren't fixed
-               # until 2015
-               field = ifelse(field == "18", "110", field),
-               # These were re-coded to stay as numbers, but I'm converting them
-               # back to their original names:
-               field = ifelse(field == "506.2", "506N", field),
-               field = ifelse(field == "506.1", "506S", field),
-               date = as.Date(date)) |>
-        filter(!is.na(para), !is.na(para_n)),
-    list.files(here("data-raw"), "parasitism-....\\.csv",
-               full.names = TRUE) |>
-        map_dfr(read_csv, show_col_types = FALSE) |>
-        # I can't find this one in any of the Arlington maps...
-        filter(Field != "N1902") |>
-        # This one had clover for part of it, but where isn't clear
-        filter(Field != "349 Clover") |>
-        rename_with(tolower) |>
-        select(field, cycle, date, starts_with("diss")) |>
-        rename_with(function(.x) gsub("^diss_", "", gsub("\\+", "_", .x))) |>
-        mutate(para = g_para + g_p_f + r_para + r_p_f,
-               para_n = para + g_unpara + g_fungus + r_unpara + r_fungus,
-               para = para / para_n) |>
-        filter(!is.na(para)) |>
-        select(field, cycle, date, para, para_n) |>
-        # Because two date formats are used:
-        mutate(date1 = as.Date(date, format = "%m/%d/%y"),
-               date2 = as.Date(date, format = "%d-%b-%y"),
-               # `structure(...` below is to keep `ifelse` from
-               # changing to numeric
-               date = structure(ifelse(is.na(date1), date2, date1),
-                                class = class(date2))) |>
-        select(-date1, -date2) |>
-        mutate(field = paste(field),
-               field = ifelse(field == "506SE", "506S", field),
-               year = year(date),
-               day = yday(date) - 1)  # <- previous years set Jan 1 as day 0
-) |>
-    do.call(what = bind_rows) |>
-    # Not sure why, but there's a 2020 data point in the 2019 dataset:
-    filter(year != 2020) |>
-    # We need to have at least 10 aphids dissected:
-    filter(para_n >= 10) |>
-    mutate(cycle = floor(cycle),
-           harvest = lead(cycle, default = tail(cycle, 1)) - cycle > 0 |
-               # This is to force the first cell be `1`
-               c(TRUE, rep(FALSE, n()-1)),
+
+
+par_df <- read_csv("data-raw/parasitism-2011-2019.csv",
+                    col_types = cols()) |>
+    mutate(para = GrPara + RedPara,
+           para_n = para + GrUnpara + RedUnpara,
+           para = para / para_n) |>
+    filter(!is.na(para)) |>
+    rename_with(tolower) |>
+    mutate(date = as.Date(paste(year, month, day, sep = "-")),
+           day = yday(date) - 1L,
+           # cycle = as.integer(cycle),
            year = factor(year, levels = sort(unique(year)))) |>
+    select(field, cycle, date, year, day, para, para_n) |>
+    arrange(year, field, day) |>
+    # We don't have records of where these fields are:
+    filter(field != "N1902", field != "349_Clover") |>
     #'
     #' I found that these dates have the same exact numbers for all fields
     #' on dates two days before.
     #' These must be duplicates, so I'm removing them.
     #'
-    filter(!date %in% as.Date(c("2011-07-14", "2011-07-21", "2011-08-26",
-                                "2012-08-17", "2012-07-11", "2012-06-14"))) |>
-    # Add the relative fitness for resistance (r_r / r_s)
-    mutate(rr_rs = rel_res_fitness(para))
+    filter(!date %in% as.Date(c("2011-07-14", "2011-07-21", "2011-08-26"))) |>
+    #' We need to have at least 10 aphids dissected:
+    filter(para_n >= 10) |>
+    #' Rename fields because some were updated:
+    mutate(field = case_when(field == "4110" ~ "418",
+                             field == "2110" ~ "218",
+                             field == "110/110" ~ "110",
+                             field == "635S" ~ "635",
+                             TRUE ~ field))
+
 
 #' ----------------------------------------------------------------------
 #' ----------------------------------------------------------------------
@@ -109,7 +71,7 @@ par_df <- list(
 #' bit different:
 #'
 obs_par_df <- par_df |>
-    select(-cycle, -harvest) |>
+    select(-cycle) |>
     arrange(date) |>
     mutate(obs = cut.Date(date, breaks = "3 days", labels = FALSE) |>
                as.numeric())

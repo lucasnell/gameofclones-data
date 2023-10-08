@@ -31,25 +31,8 @@ source("scripts/01-field/00-field-shared.R")
 
 
 
-older_ham_df <- here("data-raw/symbionts-2018-2019.csv") |>
+ham_df <- here("data-raw/hamiltonella-2012-2019.csv") |>
     read_csv(col_types = cols()) |>
-    base::`[`()
-
-
-
-newer_ham_df <- here("data-raw/symbionts-2012-2017.csv") |>
-    read_csv(col_types = cols()) |>
-    mutate(season = case_when(is.na(date) ~ "fall",
-                              late == 1 ~ "fall",
-                              late == 0 ~ "spring")) |>
-    select(year, season, date, field, clone, Hamiltonella) |>
-    rename(ham = Hamiltonella) |>
-    # Filling in this date manually based on info from Kerry Oliver:
-    mutate(date = ifelse(year == 2012, "9/4/12", date),
-           date = as.Date(date, format = "%m/%d/%y"))
-
-
-ham_df <- bind_rows(newer_ham_df, older_ham_df) |>
     group_by(year, season, date, field) |>
     summarize(ham = mean(ham), n = n(), .groups = "drop") |>
     #' filter for fields where at least 10 aphids were surveyed:
@@ -61,6 +44,7 @@ ham_df <- bind_rows(newer_ham_df, older_ham_df) |>
            plot_date = as.Date(yday(date), origin = "2022-01-01"),
            field_id = interaction(field, year, drop = TRUE),
            year = factor(year, levels = 2011:2019))
+
 
 
 

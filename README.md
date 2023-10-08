@@ -101,35 +101,24 @@ remotes::install_github("lucasnell/gameofclones")
 
 # Data from other sources
 
-Data from Ives et al. (2020) are used in files 
-`scripts/01-field/01-field-time-series.R` and
-`scripts/01-field/02-field-maps.R`.
-These data are not provided in this repository since they're not ours to share.
-To run these scripts and create plots of field data,
-you should download these additional data from
+
+We used symbiont and parasitism data from
 <https://doi.org/10.6084/m9.figshare.11828865.v1>.
-Then rename
-`Ives et al. 2020 Data Fig2_1.csv` to `parasitism-2001-2016.csv`
-and
-`Ives et al. 2020 Data Fig3A.csv` to `symbionts-2012-2017.csv`
-Lastly, put both inside the `data-raw` folder.
+We used the parasitism data unchanged.
+For symbiont data, we ran the following to process the data:
 
-If you're on a unix computer (this was tested on a mac), you can do run this
-from the command line (obviously first replacing `/path/to` with where
-`gameofclones-data` is located):
-
-```bash
-cd /path/to/gameofclones-data
-wget --content-disposition https://figshare.com/ndownloader/files/21697344
-unzip "Code and Data for Ives et al. (2020).zip"
-rm "Code and Data for Ives et al. (2020).zip"
-# remove spaces for convenience
-mv "Code and Data for Ives et al. (2020)" ives2020
-cd ives2020
-mv "Ives et al. 2020 Data Fig2_1.csv" parasitism-2001-2016.csv
-mv "Ives et al. 2020 Data Fig3A.csv" symbionts-2012-2017.csv
-mv parasitism-2001-2016.csv symbionts-2012-2017.csv ../data-raw/
-cd ..
-rm -r ives2020
+```r
+older_ham_df <- "<path>/Ives et al. 2020 Data Fig3A.csv" |>
+    read_csv(col_types = cols()) |>
+    mutate(season = case_when(is.na(date) ~ "fall",
+                              late == 1 ~ "fall",
+                              late == 0 ~ "spring")) |>
+    select(year, season, date, field, clone, Hamiltonella) |>
+    rename(ham = Hamiltonella) |>
+    # Filling in this date manually based on info from Kerry Oliver:
+    mutate(date = ifelse(year == 2012, "9/4/12", date),
+           date = as.Date(date, format = "%m/%d/%y"))
 ```
 
+We then merged it with our newer data and put this in the `data-raw`
+folder as `hamiltonella-2012-2019.csv`.
