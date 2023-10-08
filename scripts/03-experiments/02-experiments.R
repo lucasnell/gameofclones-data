@@ -317,4 +317,124 @@ cull_df |>
 
 
 
+# ============================================================================*
+# ============================================================================*
+
+# Dispersal pool sizes ----
+
+# ============================================================================*
+# ============================================================================*
+
+dpool_exp_df <- left_join(alate_cage_df,
+                       select(aphid_cage_df, -terminated, -log_aphids),
+          by = c("treatment", "rep", "cage", "days", "line")) |>
+    filter(treatment == "dispersal") |>
+    mutate(rep_rmn = factor(rep, levels = c(6, 8, 10, 11),
+                              labels = c("iv", "v", "vi", "vii"))) |>
+    group_by(rep_rmn, days, line) |>
+    summarize(dpool = sum(alates_total),
+              aphids = sum(aphids), .groups = "drop")
+
+
+#' Same as default simulations with dispersal, except only showing adult
+#' aphid numbers:
+dpool_sim_df <- sim_experiments(clonal_lines = c(line_s, line_r),
+                              sep_adults = TRUE) |>
+    getElement("aphids") |>
+    select(-rep, -plant) |>
+    mutate(field = factor(field, levels = 2:1,
+                          labels = para_lvls),
+           line = factor(line, levels = c("resistant", "susceptible"))) |>
+    filter(!is.na(line)) |>
+    group_by(time, line) |>
+    summarize(aphids = sum(N),
+              dpool = sum(N[type == "adult alate"]) * 0.1,
+              .groups = "drop")
+
+
+
+
+#' Include both experiments and simulation dispersal pools, where the latter
+#' is corrected for being done daily by summing across all days between
+#' consecutive samples for the associated experimental rep.
+dpool_df <- dpool_exp_df |>
+    arrange(rep_rmn, line, days) |>
+    split(~ rep_rmn + line) |>
+    map_dfr(\(dd) {
+        get_sim_dp <- function(start_days, end_days, line) {
+            lgl <- dpool_sim_df[["time"]] >= start_days &
+                dpool_sim_df[["time"]] <= end_days &
+                dpool_sim_df[["line"]] == line
+            dp <- sum(dpool_sim_df[["dpool"]][lgl])
+            return(dp)
+        }
+        end_days <- dd$days
+        start_days <- c(0, head(end_days, -1) + 1)
+        .line <- dd$line[[1]]
+        dd[["dpool_sim"]] <- pmap_dbl(list(start_days, end_days),
+                                      get_sim_dp, line = .line)
+        dd[["aphids_sim"]] <- map_dbl(dd$days, \(d) {
+            .lgl <- dpool_sim_df$time == d & dpool_sim_df$line == .line
+            return(dpool_sim_df$aphids[.lgl])
+        })
+        return(dd)
+    })
+
+
+
+
+dpool_p <- dpool_df |>
+    select(rep_rmn, days, line, starts_with("dpool")) |>
+    pivot_longer(starts_with("dpool"), names_to = "source", values_to = "dpool") |>
+    mutate(source = factor(source, levels = c("dpool", "dpool_sim"),
+                           labels = c("Experiments", "Simulations"))) |>
+    ggplot(aes(days, dpool)) +
+    geom_hline(yintercept = 0, color = "gray70") +
+    geom_line(aes(color = line, linetype = source), linewidth = 0.75) +
+    geom_text(data = dpool_df |>
+                  distinct(rep_rmn) |>
+                  mutate(days = 0, dpool = max(dpool_df$dpool, na.rm = TRUE)),
+              aes(label = rep_rmn), hjust = 0, vjust = 1) +
+    scale_color_manual(NULL, values = clone_pal) +
+    scale_linetype_manual(NULL, values = c(1, 2)) +
+    scale_y_continuous("Aphid dispersal pool", trans = "log1p",
+                       breaks = c(0, 5^(1:3))) +
+    scale_x_continuous("Days", limits = c(0, 250),
+                       breaks = 0:5 * 50) +
+    facet_grid(rep_rmn ~ .) +
+    theme(panel.background = element_rect(fill = "transparent"),
+          plot.background = element_rect(fill = "transparent", color = NA),
+          strip.text.y = element_blank(),
+          legend.key.width = unit(2, "lines"))
+
+
+if (write_plots) {
+    save_plot("plots/03-experiments/dispersal-pools.pdf", dpool_p, 6.5, 4)
+} else {
+    dpool_p
+}
+
+
+
+
+dpool_df |>
+    group_by(rep_rmn, days) |>
+    summarize(aphids = sum(aphids),
+              dpool = sum(dpool),
+              dpool_sim = sum(dpool_sim),
+              aphids_sim = sum(aphids_sim),
+              .groups = "drop") |>
+    filter(aphids > 0, aphids_sim > 0) |>
+    mutate(p_disp = dpool / aphids,
+           p_disp_sim = dpool_sim / aphids_sim) |>
+    filter(days > 20) |>
+    # group_by(line) |>
+    summarize(p_disp = mean(p_disp),
+              p_disp_sim = mean(p_disp_sim))
+
+# # A tibble: 1 × 2
+#   p_disp p_disp_sim
+#    <dbl>      <dbl>
+# 1 0.0118     0.00923
+
 
