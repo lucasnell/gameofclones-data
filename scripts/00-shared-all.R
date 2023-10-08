@@ -127,3 +127,7 @@ line_r <- clonal_line("resistant",
                       surv_juv_apterous = "low",
                       surv_adult_apterous = "low",
                       repro_apterous = "low")
+
+# For labeling cages
+para_lvls <- paste(c("no parasitism", "parasitism"), "patch")
+

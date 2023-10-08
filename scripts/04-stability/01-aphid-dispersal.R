@@ -345,7 +345,6 @@ ss_aphid_d_highr <- sim_experiments(clonal_lines = c(line_s2, line_r2),
                                    alate_field_disp_p = 0.1,
                                    extinct_N = 1e-5,
                                    max_t = max_t, save_every = 1)
-para_lvls <- paste(c("no parasitism", "parasitism"), "patch")
 
 ss_aphid_d_highr[["wasps"]] <- ss_aphid_d_highr[["wasps"]] |>
     select(-rep) |>

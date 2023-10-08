@@ -50,7 +50,7 @@ The folders `data-interm`, `data-raw`, `plots`, and `scripts` have separate
 
 # Replicating environment
 
-I used R version 4.3.0 (platform: aarch64-apple-darwin20) for all my scripts.
+I used R version 4.3.1 (platform: aarch64-apple-darwin20) for all my scripts.
 
 This project uses the `renv` package, so if you want to use this, you must
 first install it:
@@ -114,7 +114,7 @@ and
 `Ives et al. 2020 Data Fig3A.csv` to `symbionts-2012-2017.csv`
 Lastly, put both inside the `data-raw` folder.
 
-If you're on a unix computer (this was test on a mac), you can do run this
+If you're on a unix computer (this was tested on a mac), you can do run this
 from the command line (obviously first replacing `/path/to` with where
 `gameofclones-data` is located):
 

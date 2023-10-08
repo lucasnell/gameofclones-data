@@ -32,7 +32,6 @@
 source("scripts/00-shared-all.R")
 
 
-para_lvls <- paste(c("no parasitism", "parasitism"), "patch")
 
 
 # To maintain the same y-axis limits:
@@ -61,14 +60,12 @@ do_base_sims <- function(...) {
 
     .sims <- do.call(sim_experiments, .args)
 
-    .sims[["wasps"]] <- .sims |>
-        getElement("wasps") |>
+    .sims[["wasps"]] <- .sims[["wasps"]] |>
         select(-rep) |>
         mutate(field = factor(field, levels = 2:1,
                              labels = para_lvls))
 
-    .sims[["aphids"]] <- .sims |>
-        getElement("aphids") |>
+    .sims[["aphids"]] <- .sims[["aphids"]] |>
         select(-rep, -plant) |>
         mutate(field = factor(field, levels = 2:1,
                              labels = para_lvls),
@@ -191,7 +188,7 @@ main_wasps <- map_dfr(main_sims, ~ .x[["wasps"]]) |>
 
 
 main_p_list <- levels(main_aphids$disp) |>
-    set_names(function(x) str_replace_all(x, " ", "_") |> str_remove("aphid_")) |>
+    set_names(\(x) str_replace_all(x, " ", "_") |> str_remove("aphid_")) |>
     map(
     function(d) {
         # d = levels(main_aphids$disp)[1]
