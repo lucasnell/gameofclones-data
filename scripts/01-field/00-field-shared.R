@@ -11,19 +11,26 @@ maps_dates <- as.Date(c("2015-06-03", "2015-06-12", "2015-06-19",
                         "2013-08-01", "2013-08-09", "2013-08-19"))
 
 
-# Color palettes to use in plots (using binned rr_rs values):
-rr_rs_pal <- with(list(pal = inferno, inds = c(80, 60, 20)),
-                  list(color = c(pal(100)[inds], "gray40"),
-                       fill = c(pal(100)[inds], "white"),
-                       fill2 = c(pal(100, alpha = 0.5)[inds], "white")))
+# # Color palettes to use in plots (using binned rr_rs values):
+# rr_rs_pal <- with(list(pal = inferno, inds = c(80, 60, 20)),
+#                   list(color = c(pal(100)[inds], "gray40"),
+#                        fill = c(pal(100)[inds], "white"),
+#                        fill2 = c(pal(100, alpha = 0.5)[inds], "white")))
 
-# Add factor that breaks rr_rs into bins for plotting:
-add_rr_rs_fct <- function(.df) {
-    .df |>
-        mutate(rr_rs_fct = cut(rr_rs, c(0, 1, 1.05, 1.1, Inf),
-                               labels = c("< 1", "1 – 1.05", "1.05 – 1.1", "> 1.1")),
-               rr_rs_fct = factor(rr_rs_fct, levels = rev(levels(rr_rs_fct))))
-}
+
+
+#' Calculating parasitism at which relative fitness for resistant aphids is 1.
+#' This is based on internal data from `gameofclones` that were derived from
+#' Ives et al. (2020).
+par_rrrs0 <- with(list(
+    # Index for which element in rr/rs lookup table is closest to one:
+    idx = which(abs(gameofclones:::rr_rs_lookup$rr_rs - 1) ==
+                    min(abs(gameofclones:::rr_rs_lookup$rr_rs - 1))),
+    # Average proportion resistant from Ives et al. (2020):
+    p_res = 0.48),
+    # From this we can calculate what the parasitism is:
+    ((1 - p_res) * gameofclones:::rr_rs_lookup$ps + p_res *
+         gameofclones:::rr_rs_lookup$pr)[idx])
 
 
 par_df <- list(
@@ -88,3 +95,99 @@ par_df <- list(
                                 "2012-08-17", "2012-07-11", "2012-06-14"))) |>
     # Add the relative fitness for resistance (r_r / r_s)
     mutate(rr_rs = rel_res_fitness(para))
+
+#' ----------------------------------------------------------------------
+#' ----------------------------------------------------------------------
+# Split parasitism into periods ----
+#' ----------------------------------------------------------------------
+#' ----------------------------------------------------------------------
+
+#'
+#' To combine the field polygons with the parasitism data and to get average
+#' parasitism by approximate date, I first need to prepare the parasitism
+#' data for plotting by observation date, where the dates can be a
+#' bit different:
+#'
+obs_par_df <- par_df |>
+    select(-cycle, -harvest) |>
+    arrange(date) |>
+    mutate(obs = cut.Date(date, breaks = "3 days", labels = FALSE) |>
+               as.numeric())
+
+#'
+#' These observation groups had multiple observations of the same fields,
+#' so I split them up further.
+#'
+#' ```
+#' obs_par_df |>
+#'     group_by(obs) |>
+#'     mutate(repeats = any(duplicated(field))) |>
+#'     ungroup() |>
+#'     filter(repeats) |>
+#'     distinct(year, obs)
+#'
+#' # # A tibble: 5 × 2
+#' #   year    obs
+#' #   <fct> <dbl>
+#' # 1 2014    371
+#' # 2 2015    495
+#' # 3 2016    609
+#' # 4 2016    623
+#' # 5 2016    637
+#' ```
+#'
+
+obs_par_df <- obs_par_df |>
+    group_by(obs) |>
+    mutate(repeats = any(duplicated(field))) |>
+    ungroup() |>
+    mutate(tmpid = interaction(year, obs, drop = TRUE)) |>
+    split(~ tmpid) |>
+    map_dfr(function(.dd) {
+        unq_dates <- length(unique(.dd$date))
+        if (.dd$repeats[1]) {
+            stopifnot(unq_dates > 1)
+            for (i in 2:unq_dates) {
+                frac <- (i - 1) / unq_dates
+                .dd$obs[.dd$date == unique(.dd$date)[i]] <- .dd$obs[1] + frac
+            }
+        }
+        return(.dd)
+    }) |>
+    select(-repeats, -tmpid) |>
+    # Plus I'm going to manually combine these dates because it's clear that
+    # half the fields were sampled one day, half the next.
+    mutate(obs = ifelse(date %in% as.Date(c("2016-06-13", "2016-06-14")),
+                        mean(obs[date %in% as.Date(c("2016-06-13", "2016-06-14"))]),
+                        obs)) |>
+    mutate(obs = factor(obs)) |>
+    # I'm going to want to filter out groups that only sampled few fields:
+    group_by(year) |>
+    mutate(n_fields = length(unique(field))) |>
+    group_by(year, obs) |>
+    mutate(obs_n = n()) |>
+    # To simplify plotting by having a single obs number by the obs
+    mutate(obs_date = round(mean(date)),
+           obs_day = mean(day)) |>
+    ungroup()
+
+
+#'
+#' Plotting data through time where points are colored by obs.
+#' Looks like the splitting worked well.
+#'
+# obs_par_df |>
+#     mutate(plot_date = as.Date(day, origin = "2022-01-01")) |>
+#     ggplot(aes(plot_date, para)) +
+#     geom_hline(yintercept = 0, color = "gray70", linewidth = 0.5) +
+#     geom_point(aes(color = obs), alpha = 0.5, size = 1) +
+#     facet_wrap(~ year, ncol = 1) +
+#     scale_color_manual(values = rep(c("#1b9e77", "#d95f02", "#7570b3"), 100),
+#                        guide = "none") +
+#     scale_x_date(date_breaks = "1 month", date_labels = "%b") +
+#     scale_y_continuous("Proportion aphids parasitized", breaks = 0.4*0:2) +
+#     theme(axis.title.x = element_blank(),
+#           axis.text.x = element_text(color = "black"),
+#           panel.grid.major.x = element_line(color = "gray80"),
+#           strip.text = element_text(size = 9)) +
+#     NULL
