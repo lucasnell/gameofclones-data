@@ -55,7 +55,7 @@ obs_fields_par <- obs_par_df |>
         .f$year <- .d$year
         .f$date <- .d$date
         .f$para <- .d$para
-        .f$para_n <- .d$para_n
+        .f$dissected <- .d$dissected
         .f$rr_rs <- .d$rr_rs
         .f$obs <- .d$obs
         .f$obs_date <- .d$obs_date

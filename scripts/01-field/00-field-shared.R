@@ -4,6 +4,12 @@
 #' parasitism data.
 #'
 
+
+#' This should already be attached via `scripts/00-shared-all.R`,
+#' but this is useful for testing:
+if(! "tidyverse" %in% (.packages())) library(tidyverse)
+
+
 #' Observation dates to use for maps.
 #' We need to define these here to show them in the time series plots.
 #' See "maps" section below for more.
@@ -26,22 +32,24 @@ par_rrrs0 <- with(list(
 
 
 
-
-par_df <- read_csv("data-raw/parasitism-2011-2019.csv",
+#'
+#' Read field monitoring data including parasitism and aphid abundances:
+#'
+field_df <- read_csv("data-raw/parasitism-2011-2019.csv",
                     col_types = cols()) |>
     mutate(para = GrPara + RedPara,
-           para_n = para + GrUnpara + RedUnpara,
-           para = para / para_n) |>
+           dissected = para + GrUnpara + RedUnpara) |>
     filter(!is.na(para)) |>
     rename_with(tolower) |>
     mutate(date = as.Date(paste(year, month, day, sep = "-")),
            day = yday(date) - 1L,
+           log_aphids = log((sweepspeaaphids+1) / sweepcount),
            # cycle = as.integer(cycle),
            year = factor(year, levels = sort(unique(year)))) |>
-    select(field, cycle, date, year, day, para, para_n) |>
+    rename(alf_height = height_in) |>
+    select(field, cycle, date, year, day, para, dissected,
+           log_aphids, alf_height) |>
     arrange(year, field, day) |>
-    # We don't have records of where these fields are:
-    filter(field != "N1902", field != "349_Clover") |>
     #'
     #' I found that these dates have the same exact numbers for all fields
     #' on dates two days before.
@@ -49,7 +57,7 @@ par_df <- read_csv("data-raw/parasitism-2011-2019.csv",
     #'
     filter(!date %in% as.Date(c("2011-07-14", "2011-07-21", "2011-08-26"))) |>
     #' We need to have at least 10 aphids dissected:
-    filter(para_n >= 10) |>
+    filter(dissected >= 10) |>
     #' Rename fields because some were updated:
     mutate(field = case_when(field == "4110" ~ "418",
                              field == "2110" ~ "218",
@@ -70,11 +78,16 @@ par_df <- read_csv("data-raw/parasitism-2011-2019.csv",
 #' data for plotting by observation date, where the dates can be a
 #' bit different:
 #'
-obs_par_df <- par_df |>
-    select(-cycle) |>
+obs_par_df <- field_df |>
+    #' We don't have records of where these fields are, and this data frame
+    #' will be used for maps:
+    filter(field != "N1902", field != "349_Clover") |>
+    select(-cycle, -log_aphids, -alf_height) |>
     arrange(date) |>
     mutate(obs = cut.Date(date, breaks = "3 days", labels = FALSE) |>
-               as.numeric())
+               as.numeric(),
+           #' In these figures, parasitism is proportion:
+           para = para / dissected)
 
 #'
 #' These observation groups had multiple observations of the same fields,
