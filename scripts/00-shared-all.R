@@ -19,6 +19,8 @@ suppressPackageStartupMessages({
     library(lme4)
     library(numDeriv)
     library(parallel)
+    library(lmerTest)
+    library(car)
 })
 
 #' The only other packages I used in any scripts are...

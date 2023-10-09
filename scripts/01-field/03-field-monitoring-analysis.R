@@ -14,11 +14,6 @@ plots_out <- list(sigma_hist = "plots/01-field/sigma-histograms.pdf",
                   obs_sd     = "plots/01-field/obs-sigma-scatter.pdf",
                   examples   = "plots/01-field/example-parasitism.pdf")
 
-library(car)
-library(lmerTest)
-
-
-
 
 #' ############################################################################
 
@@ -281,6 +276,8 @@ field_examples <- function() {
     xx <- XX[XX$min_fields == .min_fields & XX$model == 1,]
     xx <- xx[order(xx$obs.sd),]
     date.list <- xx$date[c(1, round(nrow(xx)/2), nrow(xx))]
+    # print(date.list)
+    # [1] "2014-06-02" "2015-06-12" "2017-08-15"
     par(mfrow=c(3,1), mai = c(0.4, 0.7, 0.2, 0.2))
     nrep <- 10^5
     ylim.list <- c(.15, .5, .18)

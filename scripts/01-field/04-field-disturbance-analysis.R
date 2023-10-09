@@ -7,16 +7,13 @@
 source("scripts/00-shared-all.R")
 source("scripts/01-field/00-field-shared.R")
 
-library(car)
-library(lmerTest)
-
 
 # Names of file produced here:
 plot_out <- "plots/01-field/sigma-histograms-disturbance.pdf"
 
 
 
-d <- read.csv("~/Stanford_Drive/UW/gameofclones/_drafts/2023-10-07-ARI/Kishinevsky.Ives experimental data.csv")
+d <- read.csv("data-raw/disturbance.csv")
 # colnames(d)
 
 # For consistency with monitoring analysis:
