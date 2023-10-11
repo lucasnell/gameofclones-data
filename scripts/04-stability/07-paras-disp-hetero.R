@@ -81,12 +81,11 @@ sim <- sim_experiments(clonal_lines = c(line_s, line_r),
 						max_t = max_t)
 sim <- rm_tibs(sim)
 
-
 example_field_dynamics <- function() {
 
     grid.newpage()
 
-    par(mfcol=c(2,2), mai=c(0.7, 0.8, 0.4, 0.1))
+    par(mfrow=c(2,2), mai=c(0.7, 0.8, 0.4, 0.1))
 
     w <- sim$aphids[sim$aphids$time > harvesting.length*400,]
     ww <- sim$wasps[sim$wasps$time > harvesting.length*400,]
@@ -108,9 +107,27 @@ example_field_dynamics <- function() {
     lines(N ~ time0, data=w[lgl & w$line == "susceptible",],
           col=col_pal$s, lwd = 2)
     lines(wasps ~ time0, data=ww[ww$field == i.field,], col=col_pal$w, lwd = 2)
-    text(x = mean(w$time0), y = y_limits[2] / 2, labels = "susceptible", col=col_pal$s,
-         adj = c(0.5, 1), font = 2)
+    text(x = min(w$time0), y = y_limits[2] / 2, labels = "susceptible", col=col_pal$s,
+         adj = c(0, 1), font = 2)
     mtext("A", line = 1, adj = 0, font = 2, cex = 1.5)
+
+    #' ===============
+    #' Part B: field 14
+    #'
+    i.field <- n_fields %/% 2L
+    lgl <- w$field == i.field & w$type == "apterous"
+    # par(mai=c(.4,.4,.6,.1))
+    plot(N ~ time0, data=w[lgl & w$line == "resistant",], typ="l",
+         col=col_pal$r, log="y", xlab="", ylim = y_limits, lwd = 2)
+    title(sprintf("field %i", i.field), cex.main = 1, font.main = 1)
+    lines(N ~ time0, data=w[lgl & w$line == "susceptible",],
+          col=col_pal$s, lwd = 2)
+    lines(wasps ~ time0, data=ww[ww$field == i.field,], col=col_pal$w, lwd = 2)
+    text(x = min(w$time0), y = y_limits[2] / 2, labels = "resistant", col=col_pal$r,
+         adj = c(0, 1), font = 2)
+    text(x = min(w$time0), y = y_limits[1] * 5, labels = "parasitoid", col=col_pal$w,
+         adj = c(0, 0), font = 2)
+    mtext("B", line = 1, adj = 0, font = 2, cex = 1.5)
 
     #' ===============
     #' Part C: field 28
@@ -125,24 +142,6 @@ example_field_dynamics <- function() {
           col=col_pal$s, lwd = 2)
     lines(wasps ~ time0, data=ww[ww$field == i.field,], col=col_pal$w, lwd = 2)
     mtext("C", line = 1, adj = 0, font = 2, cex = 1.5)
-
-    #' ===============
-    #' Part B: field 14
-    #'
-    i.field <- n_fields %/% 2L
-    lgl <- w$field == i.field & w$type == "apterous"
-    # par(mai=c(.4,.4,.6,.1))
-    plot(N ~ time0, data=w[lgl & w$line == "resistant",], typ="l",
-         col=col_pal$r, log="y", xlab="", ylim = y_limits, lwd = 2)
-    title(sprintf("field %i", i.field), cex.main = 1, font.main = 1)
-    lines(N ~ time0, data=w[lgl & w$line == "susceptible",],
-          col=col_pal$s, lwd = 2)
-    lines(wasps ~ time0, data=ww[ww$field == i.field,], col=col_pal$w, lwd = 2)
-    text(x = mean(w$time0), y = y_limits[2] / 2, labels = "resistant", col=col_pal$r,
-         adj = c(0.5, 1), font = 2)
-    text(x = mean(w$time0), y = y_limits[1] * 2, labels = "parasitoid", col=col_pal$w,
-         adj = c(0.5, 0), font = 2)
-    mtext("B", line = 1, adj = 0, font = 2, cex = 1.5)
 
     #' ===============
     #' Part D: simulated data histogram
@@ -520,22 +519,20 @@ if (write_plots) {
 
 field_hetero_abunds <- function() {
 
-	par(mfcol = c(3,2), mai=c(0.6, 0.6, 0.3, 0.0))
-	xlab.list=c("","",expression(Parasitoid~dispersal~heterogeneity~delta))
-	exprs <- c(expression(10^-4), expression(10^-2),
-	                 expression(10^0), expression(10^2),
-	                 expression(10^4))
-	labs <- strsplit("ACEBDF", "")[[1]]
+	par(mfrow = c(2,3), mai=c(0.6, 0.6, 0.3, 0.05))
 
-	for(i in 1:3){
+	for (i in 1:3) {
 		ww <- traj.list[[i]]
 		ww[,-1] <- log10(ww[,-1]+.0001)
 
 		ylim = c(min(c(ww$peak.resistant, ww$peak.susceptible, ww$peak.wasps)),
 		         max(c(ww$peak.resistant, ww$peak.susceptible, ww$peak.wasps)))
-		plot(peak.resistant ~ wasp.var, data = ww, typ="l", ylab = "Abundance",
-		     xlab = xlab.list[i], col=col_pal$r, yaxt = "n", ylim = ylim)
-		mtext(side = 2, at=2*(-2:2), text=exprs, las=2, adj=1.2, cex = .7)
+		plot(peak.resistant ~ wasp.var, data = ww, typ="l",
+		     ylab = ifelse(i == 1, "Abundance", ""),
+		     xlab = "", col=col_pal$r, yaxt = "n", ylim = ylim)
+		aty <- axTicks(2)
+		y_labels <- sapply(aty, function(i) as.expression(bquote(10^ .(i))))
+		axis(2,at=aty,labels=y_labels, las=1)
 
 		conf_bounds(x = ww$wasp.var, y.upper = ww$peak.resistant,
 		            y.lower = ww$trough.resistant, col=alpha(col_pal$r, 0.3))
@@ -551,17 +548,22 @@ field_hetero_abunds <- function() {
 		            y.lower = ww$trough.wasps, col=alpha(col_pal$w, 0.3))
 		lines(peak.wasps ~ wasp.var, data = ww, col=col_pal$w)
 		lines(trough.wasps ~ wasp.var, data = ww, col=col_pal$w)
-		mtext(labs[i], line = 0.5, adj = 0, font = 2, cex = 1)
+		mtext(LETTERS[i], line = 0.5, adj = 0, font = 2, cex = 1)
+
 	}
-	for(i in 1:3){
+	for (i in 1:3) {
 		ww <- traj.list[[i]]
 		ww[,-1] <- log10(ww[,-1]+.0001)
 
 		ylim = c(min(c(ww$peak.resistant, ww$peak.susceptible, ww$peak.wasps)),
 		         max(c(ww$peak.resistant, ww$peak.susceptible, ww$peak.wasps)))
-		plot(peak.resistant.int ~ wasp.var, data = ww, typ="l", ylab = "",
-		     xlab = xlab.list[i], col=col_pal$r, yaxt = "n", ylim = ylim)
-		mtext(side = 2, at=2*(-2:2), text=exprs, las=2, adj=1.2, cex = .7)
+		plot(peak.resistant.int ~ wasp.var, data = ww, typ="l",
+		     ylab = ifelse(i == 1, "Abundance", ""),
+		     xlab = expression(Parasitoid~dispersal~heterogeneity~delta),
+		     col=col_pal$r, yaxt = "n", ylim = ylim)
+		aty <- axTicks(2)
+		y_labels <- sapply(aty, function(i) as.expression(bquote(10^ .(i))))
+		axis(2,at=aty,labels=y_labels, las=1)
 
 		conf_bounds(x = ww$wasp.var, y.upper = ww$peak.resistant.int,
 		            y.lower = ww$trough.resistant.int, col=alpha(col_pal$r, 0.3))
@@ -577,7 +579,16 @@ field_hetero_abunds <- function() {
 		            y.lower = ww$trough.wasps.int, col=alpha(col_pal$w, 0.3))
 		lines(peak.wasps.int ~ wasp.var, data = ww, col=col_pal$w)
 		lines(trough.wasps.int ~ wasp.var, data = ww, col=col_pal$w)
-		mtext(labs[i+3], line = 0.5, adj = 0, font = 2, cex = 1)
+		mtext(LETTERS[i+3], line = 0.5, adj = 0, font = 2, cex = 1)
+
+		if (i == 3) {
+		    text(x = 0, y = 2.5, labels = "susceptible", col=col_pal$s,
+		         adj = c(0, 0), font = 2)
+		    text(x = 1, y = 2, labels = "resistant", col=col_pal$r,
+		         adj = c(0, 0), font = 2)
+		    text(x = 1, y = -2, labels = "parasitoid", col=col_pal$w,
+		         adj = c(0, 1), font = 2)
+		}
 	}
 
 	invisible(NULL)
@@ -586,7 +597,7 @@ field_hetero_abunds <- function() {
 
 
 if (write_plots) {
-    save_plot(plots_out$abunds, field_hetero_abunds, w = 6, h = 8)
+    save_plot(plots_out$abunds, field_hetero_abunds, w = 8, h = 6)
 } else {
     field_hetero_abunds()
 }
