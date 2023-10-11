@@ -154,7 +154,9 @@ if (rerun_sims) {
             if (verbose) show(i.wasp.disp)
 
             old.sim <- new.sim
-            new.sim <- restart_experiment(old.sim, new_starts = new.starts, max_t = max_t, perturb = perturb, wasp_disp_m0 = i.wasp.disp)
+            new.sim <- restart_experiment(old.sim, new_starts = new.starts,
+                                          max_t = max_t, perturb = perturb,
+                                          wasp_disp_m0 = i.wasp.disp)
             new.starts <- new.sim$all_info[[1]]
             #new.sim <- restart_experiment(sim, max_t = max_t, perturb = perturb, wasp_disp_m0 = i.wasp.disp)
 
@@ -226,18 +228,26 @@ if (rerun_sims) {
             df$trough.prop2[df$wasp.disp == i.wasp.disp] <- min(min.matrix[,4])
 
             for(i.delta in delta.list) {
-                df$converge[df$wasp.disp == i.wasp.disp & df$delta == i.delta] <- clone_wasp_converge(new.sim, i.delta, max_t = max_t, perturb = perturb, tol = extinct_N, day.interval = day.interval)
-                df$prop.delta[df$wasp.disp == i.wasp.disp & df$delta == i.delta] <- i.delta*sum(S.resistant)/(i.delta*sum(S.resistant) + sum(S.susceptible))
+                lgl <- df$wasp.disp == i.wasp.disp & df$delta == i.delta
+                df$converge[lgl] <- clone_wasp_converge(
+                    new.sim, i.delta, max_t = max_t, perturb = perturb,
+                    tol = extinct_N,  day.interval = day.interval)
+                df$prop.delta[lgl] <- i.delta*sum(S.resistant) /
+                    (i.delta*sum(S.resistant) + sum(S.susceptible))
             }
             if (verbose) {
                 show(df[df$wasp.disp == i.wasp.disp,])
 
                 par(mfrow=c(7,1), mai=c(.3,.5,.1,.1))
-                w <- new.sim$aphids[new.sim$aphids$time %% harvesting.length == 0 & new.sim$aphids$time > harvesting.length*400,]
-                ww <- new.sim$wasps[new.sim$wasps$time %% harvesting.length == 0 & new.sim$wasps$time > harvesting.length*400,]
+                w <- new.sim$aphids[new.sim$aphids$time %% harvesting.length == 0 &
+                                        new.sim$aphids$time > harvesting.length*400,]
+                ww <- new.sim$wasps[new.sim$wasps$time %% harvesting.length == 0 &
+                                        new.sim$wasps$time > harvesting.length*400,]
                 for(i.field in 1:7){
-                    plot(N ~ time, data=w[w$field == i.field & w$line == "resistant" & w$type == "apterous",], typ="l", col=col_pal$s, log="y", xlab="", ylim = c(.01,10000))
-                    lines(N ~ time, data=w[w$field == i.field & w$line == "susceptible" & w$type == "apterous",])
+                    lgl <- w$field == i.field & w$type == "apterous"
+                    plot(N ~ time, data=w[lgl & w$line == "resistant",], typ="l",
+                         col=col_pal$s, log="y", xlab="", ylim = c(.01,10000))
+                    lines(N ~ time, data=w[lgl & w$line == "susceptible",])
                     lines(wasps ~ time, data=ww[ww$field == i.field,], col=col_pal$w)
                 }
 

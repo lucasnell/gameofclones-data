@@ -1,6 +1,9 @@
-# Nell et al. (in review)
 
-# Analyses of experimental and observational field data
+#'
+#' This file analyzes experimental field data to describe heterogeneity in
+#' parasitoid abundance.
+#' See `scripts/README.md` for the table and figure number(s).
+#'
 
 
 

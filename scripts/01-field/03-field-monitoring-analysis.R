@@ -1,5 +1,5 @@
 #'
-#' This file analyses observational field data to describe heterogeneity in
+#' This file analyzes observational field data to describe heterogeneity in
 #' parasitism.
 #' See `scripts/README.md` for the table and figure number(s).
 #'
