@@ -730,10 +730,10 @@
     },
     "gameofclones": {
       "Package": "gameofclones",
-      "Version": "1.0.1.9007",
+      "Version": "1.0.2",
       "Source": "Local",
       "RemoteType": "local",
-      "RemoteUrl": "../gameofclones_1.0.1.9007.tgz",
+      "RemoteUrl": "../gameofclones_1.0.2.tgz",
       "Requirements": [
         "R",
         "Rcpp",
@@ -744,7 +744,7 @@
         "purrr",
         "tidyr"
       ],
-      "Hash": "29f7fce78382fd2222186d8e70b09c00"
+      "Hash": "f3d8540fde582a742cf20677e839095a"
     },
     "gargle": {
       "Package": "gargle",
