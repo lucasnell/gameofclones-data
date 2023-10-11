@@ -13,6 +13,7 @@ Folder contents:
 ├── assays-population_growth.csv
 ├── assays-wasp_resistance_choice.csv
 ├── assays-wasp_resistance_no_choice.csv
+├── disturbance.csv
 ├── experiments-main.csv
 ├── experiments-pesky_wasps.csv
 ├── hamiltonella-2012-2019.csv
@@ -116,6 +117,33 @@ except for `round`, which indicates whether the parasitoids were exposed
 to that particular line first (value of `1`) or second (`2`).
 
 
+## `disturbance.csv`
+
+Field experimental dataset from
+[Kishinevsky and Ives (2022)](https://doi.org/10.1002/ecs2.4050)
+on disturbance and how it affects pea aphids, predators, parasitoids, and
+hyperparasitoids.
+
+Column descriptions:
+
+
+* `Day_of_sampling`: Integer day when sampling occurred, where day zero is 
+  the first sampling day.
+* `date`: Date of sampling.
+* `field_tr`: Number of field with character indicating treatment.
+* `aphids_1sweep`: Number of pea aphids per sweep.
+* `total_para`: Number of dissected pea aphids that were parasitized.
+* `dissected`: Total number of dissected pea aphids.
+* `logAphids`: Log-transformed pea aphids per sweep.
+* `wasp`: Total Aphidius ervi wasps across all sweeps.
+* `wasps_1sweep`: Number of Aphidius ervi wasps per sweep.
+* `sweeps.wasps`: Number of sweeps used to collect Aphidius ervi wasps.
+* `trt`: The treatment implemented where the sample was collected
+  ("Strips", "Insecticide", or "Control").
+
+
+
+
 
 ## `experiments-main.csv`
 
@@ -182,6 +210,8 @@ Column descriptions:
 ## `parasitism-2011-2019.csv`
 
 These are raw data on parasitism from field surveys.
+Data from 2011-2016 are from 
+[Ives et al. (2020)](https://doi.org/10.1038/s41559-020-1155-0).
 
 Column descriptions:
 
@@ -203,6 +233,8 @@ Column descriptions:
 ## `hamiltonella-2012-2019.csv`
 
 These are raw data on *Hamiltonella defensa* infection from field surveys.
+Data from 2012-2016 are from 
+[Ives et al. (2020)](https://doi.org/10.1038/s41559-020-1155-0).
 
 Column descriptions:
 
