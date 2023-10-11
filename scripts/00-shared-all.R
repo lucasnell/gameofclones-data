@@ -44,6 +44,8 @@ write_plots <- FALSE
 options(boot.ncpus = .n_threads)
 options(mc.cores = .n_threads)
 options(boot.parallel = ifelse(.Platform$OS.type != "windows", "multicore", "no"))
+# To have tibbles display more digits:
+options(pillar.sigfig = 4)
 
 
 # colors for resistant, susceptible, and parasitoid wasps, respectively

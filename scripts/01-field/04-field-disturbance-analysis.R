@@ -38,19 +38,6 @@ glmer_cont <- glmerControl(optimizer = "bobyqa",
                                                          tol = 1e-4))
 
 
-# #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# # summary stats
-# aphids <- data.frame(day = unique(d$Day_of_sampling))
-# for(i.day in unique(d$Day_of_sampling)) {
-# 	aphids$ratio[aphids$day == i.day] <- exp(max(d$log_aphids[d$Day_of_sampling == i.day]) - min(d$log_aphids[d$Day_of_sampling == i.day]))
-# }
-# length(unique(d$Day_of_sampling))
-# mean(aphids$ratio)
-# median(aphids$ratio)
-# max(aphids$ratio)
-# #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-
 #' ========================================================================
 #' ========================================================================
 
@@ -223,7 +210,6 @@ summ_df <- XX |>
            everything())
 
 # For results table:
-old <- options(pillar.sigfig = 4)
 summ_df[,1:5]
 # # A tibble: 2 × 5
 #   model p.value log_aphids.P pos_aphids pos_aphids_sig
@@ -234,7 +220,6 @@ summ_df[,1:5]
 
 # Other info
 summ_df[,c(1, 6:ncol(summ_df))]
-options(old)
 # # A tibble: 2 × 5
 #   model mean.dissected mean.para mean.para_prop log_aphids
 #   <int>          <dbl>     <dbl>          <dbl>      <dbl>
