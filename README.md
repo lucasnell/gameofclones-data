@@ -72,14 +72,14 @@ If you'd rather avoid `renv`, then you can install all the packages
 (in the versions I used) this way:
 
 ```r
-pkgs <- c("tidyverse@2.0.0", "here@1.0.1", "viridisLite@0.4.1", "grid@4.3.0", 
-          "scales@1.2.1", "patchwork@1.1.2", "ggtext@0.1.2", "lme4@1.1.33", 
-          "numDeriv@2016.8.1.1", "parallel@4.3.0", "plot3D@1.4", 
-          "sf@1.0.12", "ggmap@3.0.2", "rnaturalearth@0.3.2", 
-          "rnaturalearthdata@0.1.0")
+pkgs <- c("tidyverse@2.0.0", "here@1.0.1", "viridisLite@0.4.2", "grid@4.3.1",
+          "scales@1.2.1", "patchwork@1.1.3", "ggtext@0.1.2", "lme4@1.1.34",
+          "numDeriv@2016.8.1.1", "parallel@4.3.1", "lmerTest@3.1.3",
+          "car@3.1.2", "sf@1.0.14", "ggmap@3.0.2", "rnaturalearth@0.3.4",
+          "rnaturalearthdata@0.1.0", "plot3D@1.4")
 install.packages(pkgs)
 install.packages("remotes")
-remotes::install_github("lucasnell/gameofclones@v1.0.1")
+remotes::install_github("lucasnell/gameofclones@v1.0.2")
 ```
 
 Note that these only install the proper versions of the packages I manually 
@@ -90,8 +90,8 @@ Similarly, but without version numbers at all:
 
 ```r
 pkgs <- c("tidyverse", "here", "viridisLite", "grid", "scales", "patchwork", 
-          "ggtext", "lme4", "numDeriv", "parallel", "plot3D", "sf", "ggmap", 
-          "rnaturalearth", "rnaturalearthdata")
+          "ggtext", "lme4", "numDeriv", "parallel", "lmerTest", "car", "sf",
+          "ggmap", "rnaturalearth", "rnaturalearthdata", "plot3D")
 install.packages(pkgs)
 install.packages("remotes")
 remotes::install_github("lucasnell/gameofclones")
