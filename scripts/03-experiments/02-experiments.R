@@ -1,6 +1,21 @@
 
+#'
+#' Main experiment figures, plus supplemental figure for contamination in
+#' rep 11 (trial "vii") and for dispersal pool sizes.
+#'
+
+
 source("scripts/00-shared-all.R")
 
+# Names of files produced here:
+plots_out <- list(main = c(9L, 12L, 13L, 6L, 8L, 10L, 11L) |>
+                      imap_chr(\(j, i) {
+                          paste0(here("plots/03-experiments/exper-and-sims/"),
+                                 sprintf("%02i-rep%02i.pdf", i, j))
+                      }) |>
+                      set_names(c(9L, 12L, 13L, 6L, 8L, 10L, 11L)),
+                  contam = here("plots/03-experiments/exper-rep11-contam-explain.pdf"),
+                  dpool = here("plots/03-experiments/dispersal-pools.pdf"))
 
 
 # What to name wasp and no wasp cages for plot:
@@ -247,13 +262,11 @@ exp_p_list <- aphid_cage_df |>
     set_names() |>
     map(experiment_plotter)
 
+stopifnot(all(names(exp_p_list %in% names(plots_out$main))))
 
 if (write_plots) {
-    for (i in 1:length(exp_p_list)) {
-        j <- as.integer(names(exp_p_list)[i])
-        fn <- paste0(here("plots/03-experiments/exper-and-sims/"),
-                     sprintf("%02i-rep%02i.pdf", i, j))
-        save_plot(fn, exp_p_list[[i]], 4, 1.25)
+    for (n in names(exp_p_list)) {
+        save_plot(plots_out$main[[n]], exp_p_list[[n]], 4, 1.25)
     }; rm(i, j, fn)
 } else {
     wrap_plots(exp_p_list, ncol = 1)
@@ -264,8 +277,7 @@ if (write_plots) {
 
 #' Plot used to explain the contamination in rep 11.
 if (write_plots) {
-    save_plot(here("plots/03-experiments/exper-rep11-contam-explain.pdf"),
-          experiment_plotter("11", TRUE), 3, 3)
+    save_plot(plots_out$contam, experiment_plotter("11", TRUE), 3, 3)
 } else {
     experiment_plotter("11", TRUE)
 }
@@ -409,7 +421,7 @@ dpool_p <- dpool_df |>
 
 
 if (write_plots) {
-    save_plot("plots/03-experiments/dispersal-pools.pdf", dpool_p, 6.5, 4)
+    save_plot(plots_out$dpool, dpool_p, 6.5, 4)
 } else {
     dpool_p
 }

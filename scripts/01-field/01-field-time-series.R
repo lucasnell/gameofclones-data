@@ -1,21 +1,19 @@
 
+#'
+#' Plots of parasitism and Hamiltonella infection of pea aphids through time.
+#'
+
+
+
 source("scripts/00-shared-all.R")
 
 source("scripts/01-field/00-field-shared.R")
 
 
 
-#'
-#' Much of the data here are from https://doi.org/10.6084/m9.figshare.11828865.v1
-#'
-#' To run the scripts below, download this dataset, then rename
-#' `Ives et al. 2020 Data Fig2_1.csv` to `parasitism-2001-2016.csv`
-#' and
-#' `Ives et al. 2020 Data Fig3A.csv` to `symbionts-2012-2017.csv`
-#'
-#' Then put both inside the `data-raw` folder.
-#'
-
+# Names of files produced here:
+plots_out <- list(par_ham = here("plots/01-field/field-mosaic/par-ham-time.pdf"),
+                  par_sd = here("plots/01-field/field-stdevs.pdf"))
 
 
 
@@ -148,8 +146,7 @@ par_ham_ts_p <- ts_par_df |>
 
 
 if (write_plots) {
-    save_plot(here("plots/01-field/field-mosaic/par-ham-time.pdf"),
-              par_ham_ts_p, w = 5, h = 3)
+    save_plot(plots_out$par_ham, par_ham_ts_p, w = 5, h = 3)
 } else {
     par_ts_wlines_p
 }
@@ -189,7 +186,7 @@ par_sd_p <- ts_par_mean_df |>
 
 
 if (write_plots) {
-    save_plot(here("plots/01-field/field-stdevs.pdf"), par_sd_p, w = 5, h = 3)
+    save_plot(plots_out$par_sd, par_sd_p, w = 5, h = 3)
 } else {
     par_sd_p
 }

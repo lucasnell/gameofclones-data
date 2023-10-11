@@ -1,4 +1,9 @@
 
+#'
+#' Plots of parasitism at selected dates through space.
+#'
+
+
 source("scripts/00-shared-all.R")
 
 source("scripts/01-field/00-field-shared.R")
@@ -11,16 +16,13 @@ library(rnaturalearthdata)  # used for ne_countries
 
 
 
-#'
-#' Much of the data here are from https://doi.org/10.6084/m9.figshare.11828865.v1
-#'
-#' To run the scripts below, download this dataset, then rename
-#' `Ives et al. 2020 Data Fig2_1.csv` to `parasitism-2001-2016.csv`
-#' and
-#' `Ives et al. 2020 Data Fig3A.csv` to `symbionts-2012-2017.csv`
-#'
-#' Then put both inside the `data-raw` folder.
-#'
+
+# Names of files produced here:
+plots_out <- list(par_map = here("plots/01-field/field-mosaic/par-map.pdf"),
+                  par_map_leg = here("plots/01-field/field-mosaic/par-map-legend.pdf"),
+                  usa = here("plots/01-field/field-mosaic/par-map-usa-inset.pdf"),
+                  terrain = here("plots/01-field/field-mosaic/par-map-google-inset.pdf"))
+
 
 
 #' ----------------------------------------------------------------------
@@ -32,7 +34,8 @@ library(rnaturalearthdata)  # used for ne_countries
 
 
 
-fields_sf <- st_read(here("data-raw/Arlington.geojson")) |>
+fields_sf <- here("data-raw/Arlington.geojson") |>
+    st_read() |>
     st_transform(st_crs(3857)) |>
     mutate(geometry = st_centroid(geometry)) |>
     rename(geom = geometry)
@@ -108,7 +111,7 @@ fields_par_p <- obs_fields_par |>
 
 
 if (write_plots) {
-    save_plot(here("plots/01-field/field-mosaic/par-map.pdf"), fields_par_p,
+    save_plot(plots_out$par_map, fields_par_p,
               w = 3.5, h = 2.5, bg = "transparent")
 } else {
     fields_par_p
@@ -136,8 +139,7 @@ fields_par_p_leg <- function() {
 }
 
 if (write_plots) {
-    save_plot(here("plots/01-field/field-mosaic/par-map-legend.pdf"), fields_par_p_leg,
-              w = 2, h = 3.5)
+    save_plot(plots_out$par_map_leg, fields_par_p_leg, w = 2, h = 3.5)
 }
 
 
@@ -170,8 +172,7 @@ usa_map_p <- ne_countries(country = "united states of america",
     theme_void()
 
 if (write_plots) {
-    save_plot(here("plots/01-field/field-mosaic/par-map-usa-inset.pdf"), usa_map_p,
-              w = 2.5, h = 1.5, bg = NA)
+    save_plot(plot_out$usa, usa_map_p, w = 2.5, h = 1.5, bg = NA)
     # If you have pdfcrop installed:
     # system(paste("pdfcrop", here("plots/01-field/field-mosaic/par-map-usa-inset.pdf")))
 } else {
@@ -229,8 +230,7 @@ arl_goog_p <- arl_google |>
 
 
 if (write_plots) {
-     save_plot(here("plots/01-field/field-mosaic/par-map-google-inset.pdf"), arl_goog_p,
-               w = 1.5, h = 1.5)
+     save_plot(plots_out$terrain, arl_goog_p, w = 1.5, h = 1.5)
 } else {
     arl_goog_p
 }

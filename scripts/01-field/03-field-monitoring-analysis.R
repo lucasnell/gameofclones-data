@@ -10,9 +10,9 @@ source("scripts/00-shared-all.R")
 source("scripts/01-field/00-field-shared.R")
 
 # Names of files produced here:
-plots_out <- list(sigma_hist = "plots/01-field/sigma-histograms.pdf",
-                  obs_sd     = "plots/01-field/obs-sigma-scatter.pdf",
-                  examples   = "plots/01-field/example-parasitism.pdf")
+plots_out <- list(sigma_hist = here("plots/01-field/sigma-histograms.pdf"),
+                  obs_sd = here("plots/01-field/obs-sigma-scatter.pdf"),
+                  examples = here("plots/01-field/example-parasitism.pdf"))
 
 
 #' ############################################################################

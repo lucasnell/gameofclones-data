@@ -9,11 +9,11 @@ source("scripts/01-field/00-field-shared.R")
 
 
 # Names of file produced here:
-plot_out <- "plots/01-field/sigma-histograms-disturbance.pdf"
+plot_out <- here("plots/01-field/sigma-histograms-disturbance.pdf")
 
 
 
-d <- read.csv("data-raw/disturbance.csv")
+d <- read.csv(here("data-raw/disturbance.csv"))
 # colnames(d)
 
 # For consistency with monitoring analysis:

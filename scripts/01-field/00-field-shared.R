@@ -35,8 +35,8 @@ par_rrrs0 <- with(list(
 #'
 #' Read field monitoring data including parasitism and aphid abundances:
 #'
-field_df <- read_csv("data-raw/parasitism-2011-2019.csv",
-                    col_types = cols()) |>
+field_df <- here("data-raw/parasitism-2011-2019.csv") |>
+    read_csv(col_types = cols()) |>
     mutate(para = GrPara + RedPara,
            dissected = para + GrUnpara + RedUnpara) |>
     filter(!is.na(para)) |>

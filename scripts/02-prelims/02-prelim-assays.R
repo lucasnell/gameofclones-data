@@ -12,6 +12,10 @@ source("scripts/00-shared-all.R")
 
 
 
+# Names of files produced here:
+plots_out <- list(pop = here("plots/02-prelims/assays-competition.pdf"),
+                  paras = here("plots/02-prelims/assays-wasps.pdf"))
+
 
 # ========================================================================*
 # ========================================================================*
@@ -67,7 +71,7 @@ pop_p <- pop_df |>
     NULL
 
 if (write_plots) {
-    save_plot("plots/02-prelims/assays-competition.pdf", pop_p, 5, 3)
+    save_plot(plots_out$pop, pop_p, 5, 3)
 } else {
     pop_p
 }
@@ -228,7 +232,7 @@ wasp_p <- mummy_p + surv_p + juv_p +
           axis.title.x = element_blank())
 
 if (write_plots) {
-    save_plot("plots/02-prelims/assays-wasps.pdf", wasp_p, 6.5, 3.5, seed = 45670)
+    save_plot(plots_out$paras, wasp_p, 6.5, 3.5, seed = 45670)
 } else {
     wasp_p
 }

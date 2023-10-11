@@ -7,6 +7,14 @@
 
 source("scripts/00-shared-all.R")
 
+# Names of files produced here:
+plots_out <- imap(c("no_dispersal", "dispersal"),
+                      \(x, i) {
+                          paste0(here("plots/03-experiments/exper-and-sims/"),
+                                 sprintf("stoch-sims-%i-%s.pdf", i, x))
+                      }) |>
+    set_names(c("no_dispersal", "dispersal"))
+
 
 # To maintain the same y-axis limits:
 wasp_mod <- 5.078307
@@ -116,10 +124,8 @@ names(stoch_time_series) <- c("no_dispersal", "dispersal")
 
 
 if (write_plots) {
-    for (i in 1:length(stoch_time_series)) {
-        fn <- paste0(here("plots/03-experiments/exper-and-sims/"),
-                     sprintf("stoch-sims-%i-%s.pdf", i, names(stoch_time_series)[i]))
-        save_plot(fn, stoch_time_series[[i]], 4, 1.25)
+    for (n in names(stoch_time_series)) {
+        save_plot(plots_out[[n]], stoch_time_series[[n]], 4, 1.25)
     }; rm(i, fn)
 } else wrap_plots(stoch_time_series, nrow = 1)
 

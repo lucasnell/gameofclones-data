@@ -32,6 +32,18 @@
 source("scripts/00-shared-all.R")
 
 
+# Names of files produced here:
+plots_out <- list(main = imap(c("no_dispersal", "dispersal"),
+                              \(x, i) {
+                                  paste0(here("plots/03-experiments/exper-and-sims/"),
+                                         sprintf("sims-%i-%s.pdf", i, x))
+                              }) |>
+                      set_names(c("no_dispersal", "dispersal")),
+                  wasps = here("plots/03-experiments/sims-exper-wasps-t0.pdf"),
+                  p_res = here("plots/03-experiments/sims-exper-resist-t0.pdf"),
+                  perturb = here("plots/03-experiments/sims-exper-perturbs.pdf"))
+
+
 
 
 # To maintain the same y-axis limits:
@@ -176,7 +188,7 @@ for (d in names(main_sims)) {
         main_sims[[d]][[n]] <- main_sims[[d]][[n]] |>
             mutate(disp = d)
     }
-}
+}; rm(d, n)
 
 
 main_aphids <- map_dfr(main_sims, ~ group_aphids(.x[["aphids"]], "living")) |>
@@ -229,16 +241,14 @@ main_p_list <- levels(main_aphids$disp) |>
     })
 
 
-
+stopifnot(all(names(main_p_list) %in% names(plots_out$main)))
 
 
 
 if (write_plots) {
-    for (i in 1:length(main_p_list)) {
-        fn <- paste0(here("plots/03-experiments/exper-and-sims/"),
-                     sprintf("sims-%i-%s.pdf", i, names(main_p_list)[i]))
-        save_plot(fn, main_p_list[[i]], 4, 1.25)
-    }; rm(i, fn)
+    for (n in names(main_p_list)) {
+        save_plot(plots_out$main[[n]], main_p_list[[n]], 4, 1.25)
+    }; rm(n)
 } else wrap_plots(main_p_list, nrow = 1)
 
 
@@ -354,7 +364,7 @@ wasp_p <- wrap_plots(wasp_p_list, ncol = 2, guides = "collect") +
 
 
 if (write_plots) {
-    save_plot("plots/03-experiments/sims-exper-wasps-t0.pdf", wasp_p, 10, 5)
+    save_plot(plots_out$wasps, wasp_p, 10, 5)
 } else wasp_p
 
 
@@ -491,7 +501,7 @@ stable_start_p <- wrap_plots(stable_start_p_list, ncol = 2, guides = "collect") 
     theme(plot.tag = element_text(size = 14, face = "bold"))
 
 if (write_plots) {
-    save_plot("plots/03-experiments/sims-exper-resist-t0.pdf", stable_start_p, 10, 5)
+    save_plot(plots_out$p_res, stable_start_p, 10, 5)
 } else stable_start_p
 
 
@@ -622,8 +632,7 @@ stable_perturb_p <- wrap_plots(stable_perturb_p_list, ncol = 2, guides = "collec
     theme(plot.tag = element_text(size = 14, face = "bold"))
 
 if (write_plots) {
-    save_plot("plots/03-experiments/sims-exper-perturbs.pdf",
-              stable_perturb_p, 10, 5)
+    save_plot(plots_out$perturb, stable_perturb_p, 10, 5)
 } else stable_perturb_p
 
 

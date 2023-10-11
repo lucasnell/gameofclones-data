@@ -17,8 +17,8 @@ plots_out <- list(dynamics = paste0(plot_dir_out, "/example-field-dynamics.pdf")
                   resist = paste0(plot_dir_out, "/stable-sims/field-hetero-resist.pdf"),
                   abunds = paste0(plot_dir_out, "/field-hetero-abunds.pdf"))
 # Name of temporary results file produced here:
-tmp_results <- list(df = "data-interm/paras-disp-hetero.csv",
-                    traj = "data-interm/paras-disp-hetero-traj.csv")
+tmp_results <- list(df = here("data-interm/paras-disp-hetero.csv"),
+                    traj = here("data-interm/paras-disp-hetero-traj.csv"))
 
 
 
