@@ -234,12 +234,13 @@ disturb_hist <- function() {
     expression.list <- c(expression(sigma), expression(sigma[resid]~(aphids)),
                          expression(sigma[resid]~(aphids~and~wasps)),
                          expression(sigma[resid]~(aphids~and~ladybeetles)))
-    par(mfrow=c(2,1), mai=c(.9, .9, .1, .1))
+    par(mfrow=c(2,1), mai=c(.9, .9, .4, .1))
     for(i.model in 1:2){
         hist(XX$obs.sd[XX$model == i.model], col = "blue", breaks = .2*(0:7),
              main = "", xlab = expression.list[i.model])
         hist(XX$obs.sd[XX$model == i.model & XX$p.value > 0.05], add = T,
              col=adjustcolor("white", alpha.f = 0.5), breaks = .2*(0:7))
+        mtext(LETTERS[i.model], line = 1, adj = -0.1, font = 2, cex = 1)
     }
 }
 

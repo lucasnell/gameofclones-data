@@ -213,6 +213,7 @@ sigma_histogram <- function() {
                          expression(sigma[resid]~(aphids)),
                          expression(sigma[resid]~(aphids~and~plants)))
     par(mfrow=c(3,2), mai=c(0.6, 0.6, 0.4, 0.1))
+    i <- 1L
     for(i.type in 1:3){
         for (.min_fields in c(8L, 5L)) {
             xx <- XX[XX$min_fields == .min_fields & XX$model == i.type,]
@@ -224,6 +225,8 @@ sigma_histogram <- function() {
             }
             hist(xx$obs.sd[xx$p.value > 0.05], add = TRUE,
                  col=adjustcolor("white", alpha.f = 0.5), breaks = .2*(0:7))
+            mtext(LETTERS[i], line = 1, adj = -0.1, font = 2, cex = 1)
+            i <- i + 1L
         }
     }
 }
@@ -250,13 +253,15 @@ obs_sd_scatter <- function() {
     comm_dates <- Reduce(intersect, lapply(1:3, \(i) xx$date[xx$model == i])) |>
         as.Date()
     xx <- xx[xx$date %in% comm_dates,]
-    par(mfrow=c(2,1), mai=c(1, 1, .1, .1))
+    par(mfrow=c(2,1), mai=c(1, 1, 0.2, .1))
     plot(xx$obs.sd[xx$model == 1], xx$obs.sd[xx$model == 2],
          xlab = expression.list[1], ylab = expression.list[2])
+    mtext("A", line = 1, adj = -0.3, padj = 2, font = 2, cex = 1)
     lines(c(0,10),c(0,10))
     plot(xx$obs.sd[xx$model == 1], xx$obs.sd[xx$model == 3],
          xlab = expression.list[1], ylab = expression.list[3])
     lines(c(0,10),c(0,10))
+    mtext("B", line = 1, adj = -0.3, padj = 2, font = 2, cex = 1)
 }
 
 
@@ -304,6 +309,7 @@ field_examples <- function() {
         # error bars:
         arrows(x0=x, x1=x, y0=y.lower, y1=y.upper, code=3, angle=90,
                0.05, col="black")
+        mtext(LETTERS[i], line = 1, adj = -0.1, padj = 1, font = 2, cex = 1)
     }
     mtext(side = 1, "Rank by parasitism", padj = 2)
     mtext(side = 2, "Parasitism", padj = -3.5, adj = 3.7)
