@@ -438,9 +438,6 @@ if (! file.exists(tmp_results$df) | ! file.exists(tmp_results$traj)) {
 
 
 
-
-
-
 #' ======================================================================
 #' ======================================================================
 
@@ -481,22 +478,25 @@ field_hetero_resist <- function() {
 
 	plot(peak.prop1 ~ wasp.var, data = w, typ="l", ylim = c(0,1),
 	     # ylab = "Proportion resistant",
-	     # xlab = expression(Parasitoid~dispersal~heterogeneity~delta))
+	     # xlab = expression(Parasitoid~dispersal~heterogeneity~gamma))
 	     xlab = "", ylab = "")
+
+	env_col <- safe_pals$main[2]
 
 	conf_bounds(x = w$wasp.var, y.lower = (w$peak.prop2 > 0),
 	            y.upper = rep(1,length(w$peak.prop2)), col="lightgray")
 	conf_bounds(x = w$wasp.var, y.lower = w$peak.prop2,
-	            y.upper = w$peak.prop1, col = alpha("dodgerblue", 0.3))
+	            y.upper = w$peak.prop1, col = alpha(env_col, 0.3))
 	conf_bounds(x = w$wasp.var, y.lower = w$trough.prop2,
-	            y.upper = w$trough.prop1, col = alpha("dodgerblue", 0.3))
+	            y.upper = w$trough.prop1, col = alpha(env_col, 0.3))
 
-	lines(peak.prop1 ~ wasp.var, data = w, col="dodgerblue3", lwd = 2)
-	lines(peak.prop2 ~ wasp.var, data = w, col="dodgerblue3", lwd = 2)
-	lines(trough.prop1 ~ wasp.var, data = w, col="dodgerblue3", lwd = 2)
-	lines(trough.prop2 ~ wasp.var, data = w, col="dodgerblue3", lwd = 2)
+	lines(peak.prop1 ~ wasp.var, data = w, col=env_col, lwd = 2)
+	lines(peak.prop2 ~ wasp.var, data = w, col=env_col, lwd = 2)
+	lines(trough.prop1 ~ wasp.var, data = w, col=env_col, lwd = 2)
+	lines(trough.prop2 ~ wasp.var, data = w, col=env_col, lwd = 2)
 
-	lines(mean.sd/2 ~ wasp.var, data = w, lty = 1, col="red", lwd = 2)
+	# variation in parasitism:
+	# lines(mean.sd/2 ~ wasp.var, data = w, lty = 1, col="red", lwd = 2)
 }
 
 
@@ -559,7 +559,7 @@ field_hetero_abunds <- function() {
 		         max(c(ww$peak.resistant, ww$peak.susceptible, ww$peak.wasps)))
 		plot(peak.resistant.int ~ wasp.var, data = ww, typ="l",
 		     ylab = ifelse(i == 1, "Abundance", ""),
-		     xlab = expression(Parasitoid~dispersal~heterogeneity~delta),
+		     xlab = expression(Parasitoid~dispersal~heterogeneity~gamma),
 		     col=col_pal$r, yaxt = "n", ylim = ylim)
 		aty <- axTicks(2)
 		y_labels <- sapply(aty, function(i) as.expression(bquote(10^ .(i))))

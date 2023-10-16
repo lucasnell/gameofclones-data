@@ -48,7 +48,8 @@ obs_fields_par <- obs_par_df |>
     mutate(no = n()) |>
     ungroup() |>
     filter(no == 3) |>
-    mutate(obs = obs |> fct_drop(),
+    mutate(rr_rs = rel_res_fitness(para),
+           obs = obs |> fct_drop(),
            tmpid = 1:n()) |>
     split(~tmpid) |>
     map(function(.d) {
@@ -84,6 +85,8 @@ xy_lims <- st_bbox(obs_fields_par) |>
            ymax = ymax + 400)
 
 
+
+
 fields_par_p <- obs_fields_par |>
     ggplot() +
     geom_rect(xmin = xy_lims$xmin, xmax = xy_lims$xmax,
@@ -92,7 +95,7 @@ fields_par_p <- obs_fields_par |>
     geom_sf(aes(size = para, fill = rr_rs_fct), color = "black",
             shape = 21, stroke = 0.75) +
     scale_fill_manual(NULL, guide = "none",
-                      values = c("white", "#3DB7E9")) +
+                      values = c("white", safe_pals$main[4])) +
     scale_size("Proportion\nparasitized",
                limits = c(0, 0.85), range = c(0.5, 8),
                breaks = 0.2 * 0:4) +

@@ -8,8 +8,6 @@
 #' and defines the function used to save all plots.
 
 suppressPackageStartupMessages({
-    library(tidyverse)
-    library(gameofclones)
     library(here)
     library(viridisLite)
     library(grid)
@@ -21,6 +19,8 @@ suppressPackageStartupMessages({
     library(parallel)
     library(lmerTest)
     library(car)
+    library(tidyverse)
+    library(gameofclones)
 })
 
 #' The only other packages I used in any scripts are...
@@ -59,6 +59,12 @@ wasp_fill <- alpha(col_pal$w, 0.6)
 # Add color for lines if needed:
 wasp_color <- col_pal$w
 
+#' Generic colorblind-safe palettes from
+#' http://mkweb.bcgsc.ca/colorblind/palettes.mhtml#projecthome
+safe_pals <- list(main = c("#000000", "#2271B2", "#3DB7E9", "#F748A5",
+                           "#359B73", "#d55e00", "#e69f00", "#f0e442"),
+                  alt = c("#000000", "#AA0DB4", "#FF54ED", "#00B19F",
+                          "#EB057A", "#F8071D", "#FF8D1A", "#9EFF37"))
 
 #' Run mclapply on unix system, run lapply on anything else.
 #'

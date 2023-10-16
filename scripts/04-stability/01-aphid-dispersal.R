@@ -298,14 +298,15 @@ ss_aphid_d_resist <- function() {
                 col="lightgray")
 
     lines(stable.equil1 ~ disp, data = www[www$disp < cot,],
-          lwd = 3, col="dodgerblue")
+          lwd = 3, col=safe_pals$main[2])
     lines(stable.equil2 ~ disp, data = www[www$disp < cot,],
-          lwd = 3, col="dodgerblue")
+          lwd = 3, col=safe_pals$main[2])
     points(stable.equil1 ~ disp, data = www[www$disp > .04 & www$disp <= .15,],
-           col="dodgerblue")
+           col=safe_pals$main[2])
     points(stable.equil2 ~ disp, data = www[www$disp > .04 & www$disp <= .15,],
-           col="dodgerblue")
-    lines(unstable.equil.spline ~ disp, data = ww, col = "black", lwd = 3, lty = "45")
+           col=safe_pals$main[2])
+    lines(unstable.equil.spline ~ disp, data = ww, col = "black",
+          lwd = 3, lty = "45")
 }
 
 

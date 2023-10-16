@@ -148,7 +148,7 @@ par_ham_ts_p <- ts_par_df |>
 if (write_plots) {
     save_plot(plots_out$par_ham, par_ham_ts_p, w = 5, h = 3)
 } else {
-    par_ts_wlines_p
+    par_ham_ts_p
 }
 
 
