@@ -278,7 +278,7 @@ if (write_plots) {
 
 
 # For equilibrium proportion resistance ~ aphid dispersal
-ss_aphid_d_resist <- function() {
+ss_aphid_d_resist <- function(add_points = TRUE) {
     # Threshold to manually prevent crossing over of lines at bifurcation
     cot <- 0.2582
 
@@ -301,10 +301,12 @@ ss_aphid_d_resist <- function() {
           lwd = 3, col=safe_pals$main[2])
     lines(stable.equil2 ~ disp, data = www[www$disp < cot,],
           lwd = 3, col=safe_pals$main[2])
-    points(stable.equil1 ~ disp, data = www[www$disp > .04 & www$disp <= .15,],
-           col=safe_pals$main[2])
-    points(stable.equil2 ~ disp, data = www[www$disp > .04 & www$disp <= .15,],
-           col=safe_pals$main[2])
+    if (add_points) {
+        points(stable.equil1 ~ disp, data = www[www$disp > .04 & www$disp <= .15,],
+               col=safe_pals$main[2])
+        points(stable.equil2 ~ disp, data = www[www$disp > .04 & www$disp <= .15,],
+               col=safe_pals$main[2])
+    }
     lines(unstable.equil.spline ~ disp, data = ww, col = "black",
           lwd = 3, lty = "45")
 }
