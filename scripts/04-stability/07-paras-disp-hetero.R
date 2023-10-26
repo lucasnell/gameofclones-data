@@ -15,7 +15,8 @@ if (!dir.exists(plot_dir_out) && write_plots) {
 # Names of files produced here:
 plots_out <- list(dynamics = paste0(plot_dir_out, "/example-field-dynamics.pdf"),
                   resist = paste0(plot_dir_out, "/stable-sims/field-hetero-resist.pdf"),
-                  abunds = paste0(plot_dir_out, "/field-hetero-abunds.pdf"))
+                  abunds = paste0(plot_dir_out, "/field-hetero-abunds.pdf"),
+                  peak_trough = paste0(plot_dir_out, "/field-peaks-troughs.pdf"))
 # Name of temporary results file produced here:
 tmp_results <- list(df = here("data-interm/paras-disp-hetero.csv"),
                     traj = here("data-interm/paras-disp-hetero-traj.csv"))
@@ -198,6 +199,69 @@ if (write_plots) {
     save_plot(plots_out$dynamics, example_field_dynamics, w = 8, h = 8)
 } else {
     example_field_dynamics()
+}
+
+
+
+#' #####################
+# supp. figure to describe peaks and troughs ----
+#' #####################
+
+
+# Dynamics to use for peaks and troughs:
+pt_dyn_df <- sim$aphids |>
+    as_tibble() |>
+    filter(!is.na(line),
+           # field %in% round(seq(1, 28, length.out = 3)),
+           time > harvesting.length*400,
+           time < harvesting.length*500) |>
+    group_by(time, field, line) |>
+    summarize(N = sum(N), .groups = "drop") |>
+    pivot_wider(names_from = "line", values_from = "N") |>
+    mutate(time = time - min(time),
+           prop = resistant / (resistant + susceptible),
+           field = factor(field))
+
+pt_pts_df <- pt_dyn_df |>
+    group_by(field) |>
+    filter(prop %in% range(prop)) |>
+    mutate(type = ifelse(prop == min(prop), "trough", "peak")) |>
+    group_by(field, prop) |>
+    # Make sure there's only one per field and proportion:
+    filter(time == min(time)) |>
+    ungroup() |>
+    select(time, field, type, prop)
+
+pt_summ_df <- pt_pts_df |>
+    group_by(type) |>
+    summarize(hi = max(prop), prop = min(prop), .groups = "drop") |>
+    mutate(time = max(pt_dyn_df$time) * 1.05)
+
+
+
+peak_trough_p <- pt_dyn_df |>
+    ggplot(aes(time, prop)) +
+    geom_hline(yintercept = 0, color = "gray70") +
+    geom_hline(yintercept = 1, color = "gray70") +
+    geom_line(aes(color = field), linewidth = 0.75, alpha = 0.25) +
+    geom_point(data = pt_pts_df, aes(color = field, shape = type),
+               size = 3) +
+    geom_errorbar(data = pt_summ_df, aes(ymin = prop, ymax = hi),
+                  width = 40, color = safe_pals$main[2], linewidth = 1) +
+    geom_text(data = pt_summ_df, aes(y = (prop + hi) / 2, label = type),
+              color = safe_pals$main[2], hjust = 0, nudge_x = 50,
+              fontface = "bold", size = 12 / 2.8) +
+    scale_color_viridis_d(guide = "none") +
+    scale_shape_manual(values = c(17, 15), guide = "none") +
+    scale_y_continuous("Proportion resistant", limits = c(0, 1)) +
+    scale_x_continuous("Days", limits = c(0, max(pt_dyn_df$time) * 1.125),
+                       breaks = seq(0, max(pt_dyn_df$time) %/% 500 * 500, 500))
+
+
+if (write_plots) {
+    save_plot(plots_out$peak_trough, peak_trough_p, w = 6.5, h = 5)
+} else {
+    peak_trough_p
 }
 
 
