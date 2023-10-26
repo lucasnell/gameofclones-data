@@ -373,16 +373,16 @@ y_labs <- 10^(0:3)
 ss_aphid_d_highr_p <- ss_aphid_d_highr[["aphids"]] |>
     filter(time <= 1000) |>
     ggplot(aes(time, N)) +
-    geom_area(data = ss_aphid_d_highr[["wasps"]] |>
+    geom_line(data = ss_aphid_d_highr[["wasps"]] |>
                   mutate(N = wasps / wasp_mod) |>
                   filter(time <= 1000),
-              fill = wasp_fill, color = NA) +
+              color = col_pal$w) +
     geom_hline(yintercept = 0, color = "gray70") +
     geom_line(aes(color = line))+
     geom_text(data = tibble(field = factor(para_lvls[2], levels = para_lvls),
-                            time = 650, N = log(10)),
+                            time = 650, N = log(80)),
               aes(label = "parasitoids"), size = 9 / 2.8,
-              hjust = 0.5, vjust = 0.5, color = col_pal$w) +
+              hjust = 0.5, vjust = 1, color = col_pal$w) +
     geom_text(data = ss_aphid_d_highr[["aphids"]] |>
                   filter(time == 500, field == "no parasitism patch"),
               aes(label = line, color = line), size = 9 / 2.8,

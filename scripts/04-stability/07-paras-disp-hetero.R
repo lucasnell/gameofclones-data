@@ -251,7 +251,7 @@ peak_trough_p <- pt_dyn_df |>
     geom_text(data = pt_summ_df, aes(y = (prop + hi) / 2, label = type),
               color = safe_pals$main[2], hjust = 0, nudge_x = 50,
               fontface = "bold", size = 12 / 2.8) +
-    scale_color_viridis_d(guide = "none") +
+    scale_color_viridis_d(guide = "none", option = "A") +
     scale_shape_manual(values = c(17, 15), guide = "none") +
     scale_y_continuous("Proportion resistant", limits = c(0, 1)) +
     scale_x_continuous("Days", limits = c(0, max(pt_dyn_df$time) * 1.125),
