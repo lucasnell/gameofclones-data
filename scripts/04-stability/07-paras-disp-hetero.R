@@ -605,3 +605,156 @@ if (write_plots) {
 
 
 
+
+
+
+
+#' #####################
+# ring inset plot ----
+#' #####################
+
+
+n_fields <- 28L
+wasp_density_0 <- rep(0.2, n_fields)
+
+delta.list <- exp(0.5*(-10:10))
+
+# wasp dispersal
+wasp.var.list <- 0.1*(0:20)
+pick.wasp.var <- 11L
+
+set.seed(0)
+#sd.wasp.field.attract <- 0.5844
+sd.wasp.field.attract <- 0.5844 * wasp.var.list[pick.wasp.var]
+wasp_field_attract <- sort(exp(-rnorm(0, sd = sd.wasp.field.attract, n = n_fields)))
+wasp_field_attract <- wasp_field_attract/sum(wasp_field_attract)
+wasp_field_attract
+
+wasp_disp_m0 <- 0.3
+#wasp_disp_m1 <- 0.34906
+wasp_disp_m1 <- 0.34906 * wasp.var.list[pick.wasp.var]
+
+harvesting.length <- 28
+day.interval <- harvesting.length/n_fields
+# max_t needs to be a multiple of the harvesting length
+max_t <- harvesting.length*500
+
+extinct_N <- 1e-10
+
+min.surv <- .01
+max.surv <- .04
+n.events <- round(max_t/day.interval)
+
+perturb <- data.frame(when=rep(day.interval*(1:n.events), each=3),
+                      where=rep(1:n_fields, each=3),
+                      who=c("resistant","susceptible","mummies"),
+                      how=runif(3*n.events*n_fields, min=min.surv, max=max.surv))
+# kill all mummies
+perturb$how[perturb$who == "mummies"] <- 0
+
+perturb <- perturb[1:(3*n.events),]
+
+sim <- sim_experiments(clonal_lines = c(line_s, line_r),
+                       n_fields = n_fields,
+                       wasp_density_0 = wasp_density_0,
+                       wasp_disp_m0 = wasp_disp_m0,
+                       wasp_disp_m1 = wasp_disp_m1,
+                       perturb = perturb,
+                       extinct_N = extinct_N,
+                       wasp_field_attract = wasp_field_attract,
+                       max_t = max_t)
+
+ml_p <- sim$wasps |>
+    filter(time > harvesting.length * 400) |>
+    group_by(field) |>
+    summarize(wasps = mean(log(wasps))) |>
+    mutate(rho = wasp_field_attract) |>
+    ggplot(aes(rho, wasps)) +
+    ylab("mean(log(wasps))") +
+    xlab(expression("Attractiveness to wasps" ~ (rho))) +
+    geom_point()
+
+lm_p <- sim$wasps |>
+    filter(time > harvesting.length * 400) |>
+    group_by(field) |>
+    summarize(wasps = log(mean(wasps))) |>
+    mutate(rho = wasp_field_attract) |>
+    ggplot(aes(rho, wasps)) +
+    ylab("log(mean(wasps))") +
+    xlab(expression("Attractiveness to wasps" ~ (rho))) +
+    geom_point()
+
+ml_p + lm_p
+
+
+wd <- sim$wasps |>
+    filter(time > harvesting.length * 400) |>
+    filter(time < harvesting.length * 450) |>
+    filter(field == 1 | field == 28) |>
+    mutate(field = factor(field)) |>
+    mutate(log_wasps = log(wasps),
+           wasps0 = (log_wasps - min(log_wasps)) / diff(range(log_wasps)))
+ad <- sim$aphids |>
+    filter(time > harvesting.length * 400) |>
+    filter(time < harvesting.length * 450) |>
+    filter(field == 1 | field == 28) |>
+    filter(type != "mummy") |>
+    group_by(field, time, line) |>
+    summarize(N = sum(N), .groups = "drop") |>
+    group_by(field, time) |>
+    summarize(p_res = sum(N[line == "resistant"]) / sum(N), .groups = "drop") |>
+    mutate(field = factor(field))
+
+wd |>
+    ggplot(aes(time, wasps, color = field)) +
+    geom_line()
+
+ad |>
+    ggplot(aes(time, p_res)) +
+    geom_line(color = "dodgerblue") +
+    geom_line(data = wd, aes(y = wasps0), color = "goldenrod") +
+    facet_wrap(~ field)
+
+
+
+set.seed(896744)
+ring_df <- tibble(x = map_dbl(0:27, \(z) sin((z / 13.5 - 1) * 0.5 * pi)),
+                  y = map_dbl(0:27, \(z) cos((z / 13.5 - 1) * 0.5 * pi))) |>
+    (\(x) x[sample(nrow(x)),])() |>
+    mutate(rho = exp(-rnorm(0, sd = 0.5844, n = n_fields)),
+           rho = rho / sum(rho),
+           rr_rs_fct = factor(rho > median(rho)))
+
+
+ring_p <- ring_df |>
+    # mutate(y_begin = ifelse(rr_rs_fct == 0, y * 0.85, y * 0.45),
+    #        y_end =   ifelse(rr_rs_fct == 1, y * 0.85, y * 0.45),
+    #        x_begin = ifelse(rr_rs_fct == 0, x * 0.85, x * 0.45),
+    #        x_end =   ifelse(rr_rs_fct == 1, x * 0.85, x * 0.45)) |>
+    mutate(y_begin = y * 0.45,
+           y_end =   y * 0.85,
+           x_begin = x * 0.45,
+           x_end =   x * 0.85) |>
+    ggplot(aes(x, y)) +
+    geom_point(# aes(fill = rr_rs_fct),
+               color = "black", shape = 21, stroke = 0.75, size = 4) +
+    geom_segment(aes(x = x_begin, xend = x_end, y = y_begin, yend = y_end,
+                     linewidth = rho),
+                 linejoin = "mitre",
+                 arrow = arrow(length = unit(0.15, "lines"), type = "closed")) +
+    scale_fill_manual(NULL, guide = "none", values = c("white", safe_pals$main[4])) +
+    scale_color_manual(NULL, guide = "none", values = c("gray70", "black")) +
+    scale_linewidth_continuous(range = c(0.25, 2)) +
+    # scale_linewidth_manual(NULL, guide = "none", values = c(0.5, 1)) +
+    theme_void() +
+    coord_cartesian(ylim = c(-0.02, 1.02), xlim = c(-1.02, 1.02))
+
+
+if (write_plots) {
+    save_plot(here("plots/04-stability/ring.pdf"),
+              ring_p + theme(legend.position = "none"),
+              w = 4, h = 1.5, bg = "transparent")
+} else {
+    ring_p
+}
+
