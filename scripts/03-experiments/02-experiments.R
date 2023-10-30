@@ -22,6 +22,9 @@ plots_out <- list(main = c(9L, 12L, 13L, 6L, 8L, 10L, 11L) |>
 cage_lvls <- c("parasitism cage" = "wasp", "no parasitism cage" = "no wasp")
 
 
+
+
+
 exp_df <- here("data-raw/experiments-main.csv") |>
     read_csv(col_types = cols()) |>
     #'
@@ -325,6 +328,70 @@ cull_df |>
     geom_point() +
     facet_wrap(~ rep, ncol = 1)
 
+
+here("data-raw/experiments-main.csv") |>
+    read_csv(col_types = cols()) |>
+    mutate(date = as.Date(date, format = "%m/%d/%Y"),
+           start_date = as.Date(start_date, format = "%m/%d/%Y"),
+           days = difftime(date, start_date, units = "days") |>
+               as.integer(),
+           cage = cage |>
+               tolower() |>
+               factor(levels = c("no wasp", "wasp")),
+           cage = fct_recode(cage, !!!cage_lvls),
+           rep = factor(rep, levels = sort(unique(rep)))) |>
+    select(rep, cage, date, days, notes) |>
+    filter(!is.na(notes)) |>
+    filter(str_detect(notes, "wasp sex")) |>
+    mutate(notes = notes |>
+               str_remove(".*<wasp sex>") |>
+               str_remove("</>.*") |>
+               str_split(", ") |>
+               map(\(x) {
+                   males  <- x[str_detect(x, " male$")] |>
+                       str_remove(" male$") |>
+                       as.integer()
+                   females  <- x[str_detect(x, " female$")] |>
+                       str_remove(" female$") |>
+                       as.integer()
+                   fm <- c(females, males)
+                   return(fm)
+               }),
+           female_ratio = notes |>
+               map_dbl(\(x) {
+                   x[1] / sum(x)
+               }),
+           n_sexed = notes |> map_int(sum)) |>
+    select(-notes) |>
+    # filter(n_sexed > 5) |>
+    arrange(rep, days)
+
+
+here("data-raw/experiments-pesky_wasps.csv") |>
+    read_csv(col_types = cols()) |>
+    select(rep, date, mummies, starts_with("adult")) |>
+    #' On 3/16 and 3/22 I removed wasps/mummies but didn't record the number.
+    filter(!is.na(mummies)) |>
+    rename(females = `adult females`,
+           males = `adult males`,
+           unknown = `adults unk.`) |>
+    mutate(date = as.Date(date, "%d-%b-%y"),
+           rep = factor(rep, levels = levels(exp_df$rep))) |>
+    group_by(rep, date) |>
+    summarize_all(sum) |>
+    ungroup() |>
+    mutate(n_sexed = females + males,
+           female_ratio = females / n_sexed) |>
+    filter(n_sexed > 0) |>
+    select(rep, date, female_ratio, n_sexed) |>
+    # These are changed to make it join easier with the other wasp data:
+    mutate(cage = factor("no parasitism cage", levels = names(cage_lvls)),
+           start_date = map_chr(rep, ~ filter(exp_df, rep == .x)[["date"]] |>
+                                    min() |> paste()) |> as.Date(),
+           days = difftime(date, start_date, units = "days") |>
+               as.integer()) |>
+    select(rep, date, days, cage, female_ratio, n_sexed) |>
+    filter(date <= max(exp_df$date))
 
 
 
