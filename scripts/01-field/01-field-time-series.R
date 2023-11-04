@@ -12,8 +12,7 @@ source("scripts/01-field/00-field-shared.R")
 
 
 # Names of files produced here:
-plots_out <- list(par_ham = here("plots/01-field/field-mosaic/par-ham-time.pdf"),
-                  par_sd = here("plots/01-field/field-stdevs.pdf"))
+plots_out <- list(par_ham = here("plots/01-field/field-mosaic/par-ham-time.pdf"))
 
 
 
@@ -150,45 +149,4 @@ if (write_plots) {
 } else {
     par_ham_ts_p
 }
-
-
-
-
-#' ----------------------------------------------------------------------
-#' ----------------------------------------------------------------------
-# stdev plot ----
-#' ----------------------------------------------------------------------
-#' ----------------------------------------------------------------------
-
-para_mod <- 0.5 #max(ts_par_mean_df$para_sd) / max(ts_par_mean_df$para)
-
-
-
-par_sd_p <- ts_par_mean_df |>
-    ggplot() +
-    geom_hline(yintercept = 0, color = "gray70", linewidth = 0.5) +
-    geom_hline(data = ts_par_mean_df |>
-                   group_by(year) |>
-                   summarize(para_sd = sd(para)),
-               aes(yintercept = para_sd), color = "red", linewidth = 1) +
-    geom_line(aes(plot_date, para * para_mod), color = "gray70") +
-    geom_point(aes(plot_date, para_sd)) +
-    # geom_line(aes(plot_date, para_sd)) +
-    scale_x_date(breaks = ymd(sprintf("2022-%02i-01", 5:11)),
-                 labels = c("","Jun","","Aug", "","Oct",""),
-                 limits = as.Date(c("2022-04-27", "2022-10-30"))) +
-    scale_y_continuous("Standard deviation",
-                       sec.axis = sec_axis(~ . / para_mod, "Parasitism")) +
-    facet_wrap(~ year, nrow = 3) +
-    theme(axis.title.x = element_blank(),
-          axis.text.x = element_text(color = "black", size = 8),
-          strip.text = element_text(size = 9))
-
-
-if (write_plots) {
-    save_plot(plots_out$par_sd, par_sd_p, w = 5, h = 3)
-} else {
-    par_sd_p
-}
-
 
