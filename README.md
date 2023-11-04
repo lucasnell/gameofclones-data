@@ -29,7 +29,7 @@ Folder contents:
 └── scripts
 ```
 
-The following folders should be present:
+The following files/folders should be present:
 
 * `data-interm`: intermediate files with output from time-consuming simulations
 * `data-raw`: raw data from the field, experiments, and preliminary assays
@@ -122,3 +122,7 @@ older_ham_df <- "<path>/Ives et al. 2020 Data Fig3A.csv" |>
 
 We then merged it with our newer data and put this in the `data-raw`
 folder as `hamiltonella-2012-2019.csv`.
+
+
+We also used data from <https://doi.org/10.1002/ecs2.4050>.
+
