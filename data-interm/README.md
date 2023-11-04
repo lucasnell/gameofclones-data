@@ -8,13 +8,22 @@ Folder contents:
 ```
 .
 ├── README.md
+├── paras-disp-hetero-no-aphid-traj.csv
+├── paras-disp-hetero-no-aphid.csv
 ├── paras-disp-hetero-traj.csv
 ├── paras-disp-hetero.csv
-├── stable-sims-aphid_d.csv
-└── stable-sims-wasp_d.csv
+└── stable-sims-aphid_d.csv
 ```
 
 
+* `paras-disp-hetero-traj.csv`: Simplified dataset generated in simulations to
+  test how only the aphid-density-independent component of parasitoid dispersal 
+  heterogeneity affects stability. See
+  `scripts/04-stability/paras-disp-hetero-no-aphid.R` for more.
+* `paras-disp-hetero.csv`: Full dataset generated in simulations to test how
+  only the aphid-density-independent component of parasitoid dispersal 
+  heterogeneity affects stability. See
+  `scripts/04-stability/paras-disp-hetero-no-aphid.R` for more.
 * `paras-disp-hetero-traj.csv`: Simplified dataset generated in simulations to
   test how parasitoid dispersal heterogeneity affects stability. See
   `scripts/04-stability/paras-disp-hetero.R` for more.
