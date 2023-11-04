@@ -278,7 +278,9 @@ if (write_plots) {
 
 
 # For equilibrium proportion resistance ~ aphid dispersal
-ss_aphid_d_resist <- function(add_points = TRUE) {
+# `add_points` is to indicate whether you want to include points that
+#   show where the stable point is approached by oscillatory transients
+ss_aphid_d_resist <- function(add_points = FALSE) {
     # Threshold to manually prevent crossing over of lines at bifurcation
     cot <- 0.2582
 
