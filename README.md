@@ -1,5 +1,7 @@
 # gameofclones-data
 
+[![DOI](https://zenodo.org/badge/632674820.svg)](https://zenodo.org/badge/latestdoi/632674820)
+
 Data on eco-evolutionary dynamics in pea aphids and parasitoids, 
 plus scripts that analyze these data and use `gameofclones` package
 to simulate the system.
