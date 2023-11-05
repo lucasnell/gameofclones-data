@@ -232,7 +232,6 @@ experiment_plotter <- function(r, ontop = FALSE, show_terminations = TRUE) {
                        linewidth = 0.5, linetype = "22", color = "gray60")
     }
     p <- p +
-        # geom_area(data = wcd, fill = wasp_fill, color = NA) +
         geom_hline(yintercept = 0, color = "gray70") +
         geom_line(data = wcd, color = wasp_color) +
         # Main abundance lines:
@@ -246,6 +245,7 @@ experiment_plotter <- function(r, ontop = FALSE, show_terminations = TRUE) {
         theme(strip.text = element_blank(),
               axis.title = element_blank(),
               axis.text.x = element_blank(),
+              axis.text.y = element_text(size = 9),
               panel.background = element_rect(fill = "transparent"),
               plot.background = element_rect(fill = "transparent",
                                              color = NA)) +
@@ -267,7 +267,7 @@ stopifnot(all(names(exp_p_list %in% names(plots_out$main))))
 if (write_plots) {
     for (n in names(exp_p_list)) {
         save_plot(plots_out$main[[n]], exp_p_list[[n]], 4, 1.25)
-    }; rm(i, j, fn)
+    }; rm(n)
 } else {
     wrap_plots(exp_p_list, ncol = 1)
 }
@@ -282,48 +282,6 @@ if (write_plots) {
     experiment_plotter("11", TRUE)
 }
 
-
-
-# ============================================================================*
-# ============================================================================*
-
-# Wasp culling effects ----
-
-# ============================================================================*
-# ============================================================================*
-
-
-#' We started culling adult wasps 2x / week on 26 July 2021.
-#' We reduced this to 1x / week on 23 Aug 2021.
-#' This only affected reps 6, 8, and 10 because the only other rep going
-#' at that time (rep 9) had already lost all its aphids by the time we
-#' started culling 2x / week.
-
-
-cull_df <- exp_df |>
-    filter(date <= as.Date("2021-08-23"), rep %in% c(6,8,10),
-           cage == "wasp", days >= 7) |>
-    select(rep, date, wasps, mummies)
-
-#' Differences in peak wasp and mummy abundances before and after we
-#' started culling:
-cull_df |>
-    mutate(cull = date >= as.Date("2021-07-26")) |>
-    group_by(cull, rep) |>
-    summarize(wasps = max(wasps),
-              mummies = max(mummies),
-              .groups = "drop") |>
-    group_by(cull) |>
-    summarize(wasps = mean(wasps),
-              mummies = mean(mummies))
-
-
-
-cull_df |>
-    ggplot(aes(date, wasps)) +
-    geom_line() +
-    geom_point() +
-    facet_wrap(~ rep, ncol = 1)
 
 
 
@@ -440,7 +398,6 @@ dpool_df |>
     mutate(p_disp = dpool / aphids,
            p_disp_sim = dpool_sim / aphids_sim) |>
     filter(days > 20) |>
-    # group_by(line) |>
     summarize(p_disp = mean(p_disp),
               p_disp_sim = mean(p_disp_sim))
 

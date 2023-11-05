@@ -111,6 +111,7 @@ stoch_time_series_plotter <- function(stoch_sims, .alpha = 0.1) {
         theme(strip.text = element_blank(),
               axis.title = element_blank(),
               axis.text.x = element_blank(),
+              axis.text.y = element_text(size = 9),
               panel.background = element_rect(fill = "transparent"),
               plot.background = element_rect(fill = "transparent", color = NA)) +
         coord_cartesian(clip = FALSE, ylim = c(0, max_N))
@@ -126,7 +127,7 @@ names(stoch_time_series) <- c("no_dispersal", "dispersal")
 if (write_plots) {
     for (n in names(stoch_time_series)) {
         save_plot(plots_out[[n]], stoch_time_series[[n]], 4, 1.25)
-    }; rm(i, fn)
+    }; rm(n)
 } else wrap_plots(stoch_time_series, nrow = 1)
 
 

@@ -216,9 +216,6 @@ main_p_list <- levels(main_aphids$disp) |>
             geom_line(data = wad |>
                           mutate(N = wasps / wasp_mod),
                       color = wasp_color) +
-            # geom_area(data = wad |>
-            #               mutate(N = wasps / wasp_mod),
-            #           fill = wasp_fill, color = NA) +
             geom_hline(yintercept = 0, color = "gray70") +
             geom_line(aes(color = line)) +
             scale_color_manual(values = clone_pal, guide = "none") +
@@ -234,6 +231,7 @@ main_p_list <- levels(main_aphids$disp) |>
             theme(strip.text = element_blank(),
                   axis.title = element_blank(),
                   axis.text.x = element_blank(),
+                  axis.text.y = element_text(size = 9),
                   panel.background = element_rect(fill = "transparent"),
                   plot.background = element_rect(fill = "transparent",
                                                  color = NA)) +
@@ -304,8 +302,6 @@ wasp_wasps <- map_dfr(wasp_sims, ~ .x[["wasps"]]) |>
 wasp_p_list <- map(
     levels(wasp_aphids$wasps0),
     function(w0) {
-        # w0 <- levels(wasp_aphids$wasps0)[1]
-        # rm(w0, aw0, ww0, p, ext)
         aw0 <- wasp_aphids |>
             filter(wasps0 == w0) |>
             mutate(N = ifelse(N == 0, NA, N),
@@ -320,9 +316,6 @@ wasp_p_list <- map(
             geom_line(data = ww0 |>
                           mutate(N = wasps / wasp_mod),
                       color = wasp_color) +
-            # geom_area(data = ww0 |>
-            #               mutate(N = wasps / wasp_mod),
-            #           fill = wasp_fill, color = NA) +
             geom_line(aes(color = line)) +
             scale_color_manual(NULL, values = clone_pal) +
             scale_y_continuous("Aphid abundance",
@@ -386,9 +379,6 @@ if (write_plots) {
 #' How stable are results to starting conditions?
 #'
 do_stable_start_sims <- function(.p_res, .max_t = 5000) {
-
-    # .p_res = 0.25
-    # rm(.p_res, .n, .line_s, .line_r)
 
     if (round(sum(line_s$density_0[line_s$density_0 > 0]), 10) !=
         round(sum(line_r$density_0[line_r$density_0 > 0]), 10)) {
@@ -457,9 +447,6 @@ stable_start_p_list <- map(
             geom_line(data = ssw |>
                           mutate(N = wasps / wasp_mod),
                       color = wasp_color) +
-            # geom_area(data = ssw |>
-            #               mutate(N = wasps / wasp_mod),
-            #           fill = wasp_fill, color = NA) +
             geom_line(aes(color = line)) +
             scale_color_manual(NULL, values = clone_pal) +
             scale_y_continuous("Aphid abundance",
@@ -598,9 +585,6 @@ stable_perturb_p_list <- map(
             geom_line(data = ssw |>
                           mutate(N = wasps / wasp_mod),
                       color = wasp_color) +
-            # geom_area(data = ssw |>
-            #               mutate(N = wasps / wasp_mod),
-            #           fill = wasp_fill, color = NA) +
             geom_line(aes(color = line)) +
             scale_color_manual(NULL, values = clone_pal) +
             scale_y_continuous("Aphid abundance",
