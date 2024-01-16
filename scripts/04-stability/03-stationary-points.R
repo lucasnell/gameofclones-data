@@ -31,8 +31,7 @@ sim <- sim_experiments(clonal_lines = c(line_s, line_r),
                        max_t = max_t, save_every = 1e2)
 sim <- restart_experiment(sim,
                           alate_field_disp_p = disp_p,
-                          new_starts = sim$all_info[[1]]
-)
+                          new_starts = sim$all_info[[1]])
 
 
 d <- clone_traj(sim, delta = delta.list[1], max_t = max_t)

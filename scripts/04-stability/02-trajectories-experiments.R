@@ -14,8 +14,10 @@ file_out <- here("plots/04-stability/trajectories-experiment.pdf")
 
 
 
-clone_plot <- function(sim, delta.list, labels = "", max_t = 1e3,
-                       max_t.converge = 1e4, perturb = NULL){
+clone_plot <- function(sim, delta.list, max_t = 500){
+
+    max_t.converge = 1e4
+    perturb = NULL
 
     d <- sim$aphids
     d$line.type <- paste0(d$line,".", d$type)
@@ -44,42 +46,40 @@ clone_plot <- function(sim, delta.list, labels = "", max_t = 1e3,
     d$prop <- d$resistant/(d$resistant + d$susceptible)
 
     d$col <- "gray"
+    d$col[d$converge] <- "dodgerblue"
     d$col[d$delta == 1] <- "black"
 
-    par(mfrow=c(3,1), mai = c(.6,.7,.1,.1))
-    plot(prop ~ time, data=d[d$delta == 1 & d$field == 1,], typ="l",
-         ylim=c(0,1), ylab = "Resistant (field 1)", xlab = "Time")
-    grid.text("A", x = unit(0, "npc"), y = unit(1, "npc"),
-              just = c("left", "top"),
-              gp = gpar(fontsize = 18, fontface = "bold"))
+    d$lwd <- 1
+    d$lwd[d$converge] <- 1.5
+    d$lwd[d$delta == 1] <- 2
+
+    par(mfrow=c(1, 3), mai = c(.6,.7,.4,.1))
+    plot(prop ~ time, data=d[d$delta == 1 & d$field == 1,], typ="l", lwd = lwd,
+         ylim=c(0,1), ylab = "Proportion resistant (para. patch)", xlab = "Time")
+    mtext("A", side = 3, adj = 0, font = 2, cex = 1.5, line = 1)
     for (i.delta in delta.list) {
         lines(prop ~ time, data=d[d$delta == i.delta & d$field == 1,],
-              col=col, lty=2-as.numeric(converge))
+              col=col, lwd = lwd)
     }
-    text(x=max_t/2, y=.9, labels=labels, cex=2)
-    lines(prop ~ time, data=d[d$delta == 1 & d$field == 1,])
+    lines(prop ~ time, data=d[d$delta == 1 & d$field == 1,], lwd = lwd)
 
-    plot(prop ~ time, data=d[d$delta == 1 & d$field == 2,], typ="l",
-         ylim=c(0,1), ylab = "Resistant (field 2)", xlab = "Time")
-    grid.text("B", x = unit(0, "npc"), y = unit(0.66, "npc"),
-              just = c("left", "top"),
-              gp = gpar(fontsize = 18, fontface = "bold"))
+    plot(prop ~ time, data=d[d$delta == 1 & d$field == 2,], typ="l", lwd = lwd,
+         ylim=c(0,1), ylab = "Proportion resistant (no-para. patch)", xlab = "Time")
+    mtext("B", side = 3, adj = 0, font = 2, cex = 1.5, line = 1)
     for (i.delta in delta.list) {
         lines(prop ~ time, data=d[d$delta == i.delta & d$field == 2,],
-              col=col, lty=2-as.numeric(converge))
+              col=col, lwd = lwd)
     }
-    lines(prop ~ time, data=d[d$delta == 1 & d$field == 2,])
+    lines(prop ~ time, data=d[d$delta == 1 & d$field == 2,], lwd = lwd)
 
-    plot(wasps ~ time, data=d[d$delta == 1 & d$field == 1,], typ="l",
-         ylim = c(0, max(d$wasps)), ylab = "Parasitoids (field 1)", xlab = "Time")
-    grid.text("C", x = unit(0, "npc"), y = unit(0.33, "npc"),
-              just = c("left", "top"),
-              gp = gpar(fontsize = 18, fontface = "bold"))
+    plot(wasps ~ time, data=d[d$delta == 1 & d$field == 1,], typ="l", lwd = lwd,
+         ylim = c(0, max(d$wasps)), ylab = "Parasitoid abundance (para. patch)", xlab = "Time")
+    mtext("C", side = 3, adj = 0, font = 2, cex = 1.5, line = 1)
     for(i.delta in delta.list) {
         lines(wasps ~ time, data=d[d$delta == i.delta & d$field == 1,],
-              col=col, lty=2-as.numeric(converge))
+              col=col, lwd = lwd)
     }
-    lines(wasps ~ time, data=d[d$delta == 1 & d$field == 1,])
+    lines(wasps ~ time, data=d[d$delta == 1 & d$field == 1,], lwd = lwd)
 }
 
 
@@ -101,10 +101,10 @@ sim <- sim_experiments(clonal_lines = c(line_s, line_r),
                        extinct_N = 1e-10,
                        max_t = max_t, save_every = 1e0)
 
-traj_exp_p <- function() clone_plot(sim, delta.list, max_t = 500)
+traj_exp_p <- function() clone_plot(sim, delta.list)
 
 if (write_plots) {
-    save_plot(file_out, traj_exp_p, w = 5, h = 7)
+    save_plot(file_out, traj_exp_p, w = 8, h = 3)
 } else {
     traj_exp_p()
 }
