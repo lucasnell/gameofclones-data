@@ -92,13 +92,13 @@ fields_par_p <- obs_fields_par |>
     geom_rect(xmin = xy_lims$xmin, xmax = xy_lims$xmax,
               ymin = xy_lims$ymin, ymax = xy_lims$ymax,
               fill = NA, color = "black", linewidth = 0.5) +
-    geom_sf(aes(size = para, fill = rr_rs_fct), color = "black",
-            shape = 21, stroke = 0.75) +
-    scale_fill_manual(NULL, guide = "none",
-                      values = c("white", safe_pals$main[4])) +
-    scale_size("Proportion\nparasitized",
-               limits = c(0, 0.85), range = c(0.5, 8),
-               breaks = 0.2 * 0:4) +
+    geom_sf(aes(fill = para), color = "black",
+            size = 4, shape = 21, stroke = 0.75) +
+    scale_fill_gradient2("Proportion\nparasitized",
+                         low = "#4393c3",
+                         mid = "white",
+                         high = "#b2182b",
+                         midpoint = par_rrrs0) +
     guides(size = guide_legend(override.aes = list(shape = 16))) +
     coord_sf(datum = st_crs(3857),
              xlim = as.numeric(xy_lims[c("xmin", "xmax")]),
@@ -110,7 +110,8 @@ fields_par_p <- obs_fields_par |>
           legend.position = "none",
           panel.background = element_rect(fill = "transparent", color = NA),
           plot.background = element_rect(fill = "transparent", color = NA),
-          legend.box.background = element_rect(fill = "transparent"))
+          legend.box.background = element_rect(fill = "transparent",
+                                               color = NA))
 
 
 if (write_plots) {
@@ -142,7 +143,7 @@ fields_par_p_leg <- function() {
 }
 
 if (write_plots) {
-    save_plot(plots_out$par_map_leg, fields_par_p_leg, w = 2, h = 3.5)
+    save_plot(plots_out$par_map_leg, fields_par_p_leg, w = 0.8, h = 1.8)
 }
 
 

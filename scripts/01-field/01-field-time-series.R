@@ -40,10 +40,13 @@ ham_df <- here("data-raw/hamiltonella-2012-2019.csv") |>
            # So they show as dates but can be plotted on same scale:
            plot_date = as.Date(yday(date), origin = "2022-01-01"),
            field_id = interaction(field, year, drop = TRUE),
-           year = factor(year, levels = 2011:2019))
-
-
-
+           year = factor(year, levels = 2011:2019)) |>
+    # Add number of times observed that field that year
+    group_by(field_id) |>
+    mutate(obs_once = n()) |>
+    ungroup() |>
+    mutate(obs_once = factor(obs_once == 1, levels = c(TRUE, FALSE),
+                             labels = c("once", "multiple")))
 
 
 
@@ -101,21 +104,16 @@ par_ham_ts_p <- ts_par_df |>
     geom_hline(yintercept = par_rrrs0, color = "gray70",
                linewidth = 0.5, linetype = "22") +
     #' -------------
-    #' Proportion resistant:
+    #' Proportion parasitized:
     geom_line(aes(group = field_col), linewidth = 0.5, color = "gray70") +
     geom_line(data = ts_par_mean_df,
               color = "black", linewidth = 0.75) +
-    # stat_smooth(method = "gam", se = FALSE, color = "black", linewidth = 0.75) +
     #' -------------
     #' Proportion infected with Hamiltonella:
-    geom_point(data = ham_df, aes(y = ham), size = 1, shape = 1,
-               color = "#e69f00", stroke = 0.5) +
-    geom_segment(data = ham_df |>
-                     group_by(year, season) |>
-                     summarize(x = mean(plot_date),
-                               ham = mean(ham), .groups = "drop"),
-                 aes(y = ham, yend = ham, x = x - 7, xend = x + 7),
-                 linewidth = 1, color = "#e69f00") +
+    geom_point(data = ham_df, aes(y = ham), size = 1,
+               color = "#e69f00", stroke = 0.75, shape = 1) +
+    geom_line(data = filter(ham_df, obs_once == "multiple"),
+              aes(y = ham, group = field_id), color = "#e69f00", linewidth = 0.5) +
     #' -------------
     #' Arrows for dates on maps:
     geom_segment(data = tibble(plot_date = yday(maps_dates) |>
@@ -135,17 +133,19 @@ par_ham_ts_p <- ts_par_df |>
     coord_cartesian(ylim = c(-0.2, 0.9), expand = FALSE, clip = "off") +
     theme(axis.title.x = element_blank(),
           axis.text.x = element_text(color = "black", size = 8),
-          axis.title.y = element_markdown(hjust = 0.5, lineheight = 1.1),
+          # axis.title.y = element_markdown(hjust = 0.5, lineheight = 1.1),
+          axis.title.y = element_blank(),
           legend.title = element_markdown(hjust = 0),
           legend.position = "none",
           strip.text = element_text(size = 9)) +
-    scale_color_viridis_d(guide = "none") +
-    scale_fill_viridis_d(guide = "none")
+    # scale_shape_manual(values = c(1, 19)) +
+    NULL
 # par_ham_ts_p
 
 
 if (write_plots) {
-    save_plot(plots_out$par_ham, par_ham_ts_p, w = 5, h = 3)
+    # save_plot(plots_out$par_ham, par_ham_ts_p, w = 5, h = 3)
+    save_plot(plots_out$par_ham, par_ham_ts_p, w = 4.6, h = 3)
 } else {
     par_ham_ts_p
 }
