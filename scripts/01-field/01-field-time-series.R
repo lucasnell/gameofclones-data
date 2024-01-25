@@ -133,18 +133,15 @@ par_ham_ts_p <- ts_par_df |>
     coord_cartesian(ylim = c(-0.2, 0.9), expand = FALSE, clip = "off") +
     theme(axis.title.x = element_blank(),
           axis.text.x = element_text(color = "black", size = 8),
-          # axis.title.y = element_markdown(hjust = 0.5, lineheight = 1.1),
           axis.title.y = element_blank(),
           legend.title = element_markdown(hjust = 0),
           legend.position = "none",
           strip.text = element_text(size = 9)) +
-    # scale_shape_manual(values = c(1, 19)) +
     NULL
 # par_ham_ts_p
 
 
 if (write_plots) {
-    # save_plot(plots_out$par_ham, par_ham_ts_p, w = 5, h = 3)
     save_plot(plots_out$par_ham, par_ham_ts_p, w = 4.6, h = 3)
 } else {
     par_ham_ts_p
