@@ -33,7 +33,7 @@ plots_out <- list(pop = here("plots/02-prelims/assays-competition.pdf"),
 
 
 pop_df <- here("data-raw/assays-population_growth.csv") |>
-    read_csv() |>
+    read_csv(col_types = cols()) |>
     mutate(date = as.Date(paste(year, month, day, sep = "-")),
            rep = factor(rep)) |>
     group_by(rep, line) |>
@@ -337,6 +337,11 @@ mean(abs(surv_perms) >= abs(obs_surv))
 #' that as a random effect in the regressions below to show that this
 #' doesn't affect our conclusions based on the permutation tests.
 #'
+#' The factor `id` is...
+#' `0` for the choice assays,
+#' `1` for round 1 of the no-choice assays, and
+#' `2` for round 2 of the no-choice assays.
+#'
 
 
 surv_mod <- glmer(cbind(survived, non_survived) ~ line + id + (1 | wasp_group),
@@ -364,4 +369,37 @@ juv_mod_boot <- bootMer(juv_mod, function(x) fixef(x)[["linesusceptible"]],
 quantile(juv_mod_boot$t, c(0.025, 0.5, 0.975))
 #       2.5%        50%      97.5%
 # -1.0873879 -0.9627950 -0.8421847
+
+
+
+
+#'
+#' To see if there was an appreciable effect of aphid color in our assays,
+#' we asked:
+#' Is there a difference between susceptible aphid outcomes in no-choice assays
+#' and first round of choice assays?
+#'
+#' To test this question, we fit GLMs on the dataset only including red
+#' aphids (susceptible in our study) and not including a random effect for
+#' parasitoid individuals as in the main analysis due to fitting issues;
+#' this gives us greater power but potentially inflated type I error.
+#'
+glm(cbind(survived, non_survived) ~ id,
+    filter(wasp_df, line == "susceptible"), family = binomial) |>
+    summary()
+glm(juvenile_end ~ id,
+    filter(wasp_df, line == "susceptible"), family = poisson) |>
+    summary()
+glm(cbind(mummy_end, non_mummy) ~ id,
+    filter(wasp_df, line == "susceptible"), family = binomial) |>
+    summary()
+
+#'
+#' In no case was there a difference in survival, juvenile production, or
+#' successful parasitism for susceptible aphids in the first round of the
+#' choice assays compared to the no-choice assays.
+#' This is evident from covariate `id1` never being significant above.
+#' The effect of color is likely far outweighed by resistance in our assays
+#' and experiments.
+#'
 
